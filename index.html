@@ -122,6 +122,22 @@
   @media (max-width:380px){
     .form-grid{grid-template-columns:1fr}
   }
+
+  /* --- MODALES --- */
+  .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition: opacity 0.2s; }
+  .modal-overlay.active { opacity:1; pointer-events:all; }
+  .modal { background:var(--surface-1); border-radius:12px; padding:20px; max-width:90%; width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2); transform:scale(0.9); transition: transform 0.2s; }
+  .modal-overlay.active .modal { transform:scale(1); }
+  .modal h3 { margin-top:0; margin-bottom:15px; font-size:18px; }
+  .modal p { margin-bottom:20px; font-size:14px; }
+  .modal-actions { display:flex; justify-content:flex-end; gap:10px; }
+  .modal-btn { padding:8px 16px; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; }
+  .modal-btn.cancel { background:var(--surface-0); color:var(--text); }
+  .modal-btn.ok { background:var(--border-accent); color:#fff; }
+  .modal-btn.danger { background:#a32d2d; color:#fff; }
+  .settings-row { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding:10px 0; gap:10px;}
+  .settings-row input { flex:1; }
+  .settings-row button { margin:0; padding:6px; }
 </style>
 </head>
 <body>
@@ -131,7 +147,10 @@
       <img src="icon_64x64.png" alt="Life Pilot Icon" style="width: 42px; height: 42px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
       <h1 style="margin: 0; font-size: 22px;">Life Pilot</h1>
     </div>
-    <button class="reset" id="pwa-install-btn" style="display:none; color:var(--border-accent); border-color:var(--border-accent)"><i class="ti ti-device-mobile" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Instalar App</button>
+    <div style="display:flex; gap:8px;">
+      <button class="reset" id="pwa-install-btn" style="display:none; color:var(--border-accent); border-color:var(--border-accent)"><i class="ti ti-device-mobile" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Instalar App</button>
+      <button class="reset" id="settings-btn" style="padding: 6px;"><i class="ti ti-settings" style="font-size:18px;"></i></button>
+    </div>
   </div>
   <p class="sub" style="margin-top: 0;">Plan de recuperación, ejercicio y alimentación &middot; 31 julio &ndash; 31 diciembre 2026</p>
 
@@ -183,14 +202,8 @@
       <p><strong>Menú semanal orientativo</strong> (se repite cada semana, puedes rotar los días entre sí)</p>
       <div class="table-scroll">
       <table class="menu">
-        <tr><th>Día</th><th>Desayuno</th><th>Comida</th><th>Cena</th></tr>
-        <tr><td>Lunes</td><td>Tostada integral, tomate y AOVE + café</td><td>Lentejas con verdura + fruta</td><td>Pescado blanco al horno + verdura salteada</td></tr>
-        <tr><td>Martes</td><td>Yogur natural con avena y fruta</td><td>Pollo a la plancha, ensalada variada + pan integral</td><td>Crema de verduras + tortilla francesa</td></tr>
-        <tr><td>Miércoles</td><td>Tostada integral, tomate y AOVE + café</td><td>Garbanzos con verdura + fruta</td><td>Pavo a la plancha + ensalada</td></tr>
-        <tr><td>Jueves</td><td>Huevo revuelto + fruta</td><td>Pasta integral con verduras y atún</td><td>Sopa de verduras + queso fresco</td></tr>
-        <tr><td>Viernes</td><td>Yogur natural con avena y fruta</td><td>Merluza o similar a la plancha + arroz integral</td><td>Ensalada con huevo duro y aguacate</td></tr>
-        <tr><td>Sábado</td><td>Tostada integral, tomate y AOVE + café</td><td>Comida libre moderada (puedes incluir tu alcohol ocasional aquí)</td><td>Verdura salteada + pescado o pollo</td></tr>
-        <tr><td>Domingo</td><td>Huevo revuelto + fruta</td><td>Arroz o legumbre con verdura</td><td>Crema de verduras ligera</td></tr>
+        <thead><tr><th>Día</th><th>Desayuno</th><th>Comida</th><th>Cena</th></tr></thead>
+        <tbody id="diet-menu-body"></tbody>
       </table>
       </div>
       <p style="margin-top:10px"><strong>Snacks entre horas:</strong> fruta, un puñado de frutos secos naturales sin sal, o un yogur natural.</p>
@@ -302,11 +315,192 @@
         <canvas id="chart-habitos"></canvas>
       </div>
     </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="card">
+        <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Cuidado Personal</strong></p>
+        <div style="position: relative; height:150px; width:100%">
+          <canvas id="chart-cuidado"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Ejercicio</strong></p>
+        <div style="position: relative; height:150px; width:100%">
+          <canvas id="chart-ejercicio-cumplimiento"></canvas>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
 
+<!-- --- MODAL CONTAINER --- -->
+<div id="custom-modal" class="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">Título</h3>
+    <div id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- --- SETTINGS MODAL --- -->
+<div id="settings-modal" class="modal-overlay">
+  <div class="modal" style="max-height:85vh; overflow-y:auto; width:95%; max-width:600px;">
+    <h3 style="display:flex; justify-content:space-between; align-items:center;">
+      Ajustes de la App
+      <button class="reset" onclick="document.getElementById('settings-modal').classList.remove('active')"><i class="ti ti-x" style="font-size:20px;"></i></button>
+    </h3>
+    
+    <div style="margin-bottom:20px;">
+      <h4 style="margin-bottom:8px; color:var(--border-accent)">Menú de Dieta</h4>
+      <div id="settings-diet-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <h4 style="margin-bottom:8px; color:var(--border-accent)">Estiramientos</h4>
+      <div id="settings-stretches-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px;"></div>
+      <button class="modal-btn" onclick="addStretchRow()">+ Añadir Estiramiento</button>
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <h4 style="margin-bottom:8px; color:var(--border-accent)">Cuidado Personal</h4>
+      <div id="settings-care-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px;"></div>
+      <button class="modal-btn" onclick="addCareRow()">+ Añadir Tarea</button>
+    </div>
+    
+    <button class="modal-btn ok" onclick="saveSettings()" style="width:100%; margin-top:10px;">Guardar Cambios</button>
+  </div>
+</div>
+
 <script>
+/* ---------- CUSTOM MODALS ---------- */
+function showAlert(msg) {
+  const modal = document.getElementById('custom-modal');
+  document.getElementById('modal-title').innerText = 'Life Pilot';
+  document.getElementById('modal-body').innerHTML = `<p>${msg}</p>`;
+  document.getElementById('modal-actions').innerHTML = `<button class="modal-btn ok" onclick="closeModal()">OK</button>`;
+  modal.classList.add('active');
+}
+function showConfirm(msg, callback) {
+  const modal = document.getElementById('custom-modal');
+  document.getElementById('modal-title').innerText = 'Life Pilot';
+  document.getElementById('modal-body').innerHTML = `<p>${msg}</p>`;
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="modal-btn cancel" onclick="closeModal()">Cancelar</button>
+    <button class="modal-btn ok" id="modal-confirm-btn">Confirmar</button>
+  `;
+  document.getElementById('modal-confirm-btn').onclick = () => {
+    closeModal();
+    if(callback) callback();
+  };
+  modal.classList.add('active');
+}
+function closeModal() {
+  document.getElementById('custom-modal').classList.remove('active');
+}
+
+/* ---------- SETTINGS LOGIC ---------- */
+document.getElementById('settings-btn').addEventListener('click', () => {
+  renderSettingsUI();
+  document.getElementById('settings-modal').classList.add('active');
+});
+
+function renderSettingsUI() {
+  const dietList = document.getElementById('settings-diet-list');
+  dietList.innerHTML = DIET_MENU.map((d,i) => `
+    <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:5px;" data-idx="${i}">
+      <strong>${d.day}</strong>
+      <input type="text" class="diet-b" value="${d.breakfast}" placeholder="Desayuno">
+      <input type="text" class="diet-l" value="${d.lunch}" placeholder="Comida">
+      <input type="text" class="diet-d" value="${d.dinner}" placeholder="Cena">
+    </div>
+  `).join('');
+
+  const stretchList = document.getElementById('settings-stretches-list');
+  stretchList.innerHTML = STRETCHES.map((s,i) => `
+    <div class="settings-row stretch-item">
+      <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+        <input type="text" class="st-name" value="${s[0]}" placeholder="Nombre">
+        <input type="text" class="st-desc" value="${s[1]}" placeholder="Descripción">
+      </div>
+      <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
+    </div>
+  `).join('');
+
+  const careList = document.getElementById('settings-care-list');
+  careList.innerHTML = CARE_ITEMS.map((c,i) => `
+    <div class="settings-row care-item">
+      <input type="text" class="care-label" value="${c[1]}" placeholder="Nombre de la tarea">
+      <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+function addStretchRow() {
+  const div = document.createElement('div');
+  div.className = 'settings-row stretch-item';
+  div.innerHTML = `
+    <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+      <input type="text" class="st-name" placeholder="Nombre">
+      <input type="text" class="st-desc" placeholder="Descripción">
+    </div>
+    <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
+  `;
+  document.getElementById('settings-stretches-list').appendChild(div);
+}
+
+function addCareRow() {
+  const div = document.createElement('div');
+  div.className = 'settings-row care-item';
+  div.innerHTML = `
+    <input type="text" class="care-label" placeholder="Nombre de la tarea">
+    <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
+  `;
+  document.getElementById('settings-care-list').appendChild(div);
+}
+
+function saveSettings() {
+  // Diet
+  const newDiet = [];
+  document.querySelectorAll('#settings-diet-list .settings-row').forEach(row => {
+    newDiet.push({
+      day: row.querySelector('strong').innerText,
+      breakfast: row.querySelector('.diet-b').value,
+      lunch: row.querySelector('.diet-l').value,
+      dinner: row.querySelector('.diet-d').value
+    });
+  });
+  DIET_MENU = newDiet;
+  saveState('cfg-diet', DIET_MENU);
+
+  // Stretches
+  const newStretches = [];
+  document.querySelectorAll('#settings-stretches-list .stretch-item').forEach(row => {
+    const name = row.querySelector('.st-name').value;
+    const desc = row.querySelector('.st-desc').value;
+    if(name) newStretches.push([name, desc]);
+  });
+  STRETCHES = newStretches;
+  saveState('cfg-stretches', STRETCHES);
+
+  // Care
+  const newCare = [];
+  document.querySelectorAll('#settings-care-list .care-item').forEach((row, i) => {
+    const label = row.querySelector('.care-label').value;
+    // Generate a simple id based on index
+    if(label) newCare.push([`custom_care_${i}`, label]);
+  });
+  CARE_ITEMS = newCare;
+  saveState('cfg-care', CARE_ITEMS);
+
+  // Update UI
+  renderDiet();
+  renderStretches();
+  renderCare();
+  
+  document.getElementById('settings-modal').classList.remove('active');
+  showAlert('Ajustes guardados correctamente.');
+}
+
 /* ---------- EJERCICIO ---------- */
 const EXERCISES = {
   caminar_suave: ["Caminar suave", "10-20 min en llano, ritmo cómodo. Espalda erguida, pasos cortos y regulares. Si notas molestia, baja el ritmo pero no pares del todo."],
@@ -528,15 +722,31 @@ document.getElementById('reset-btn').addEventListener('click',()=>{
 });
 
 /* ---------- DIETA ---------- */
-const DIET_DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const DEFAULT_DIET_MENU = [
+  { day: "Lunes", breakfast: "Tostada integral, tomate y AOVE + café", lunch: "Lentejas con verdura + fruta", dinner: "Pescado blanco al horno + verdura salteada" },
+  { day: "Martes", breakfast: "Yogur natural con avena y fruta", lunch: "Pollo a la plancha, ensalada variada + pan integral", dinner: "Crema de verduras + tortilla francesa" },
+  { day: "Miércoles", breakfast: "Tostada integral, tomate y AOVE + café", lunch: "Garbanzos con verdura + fruta", dinner: "Pavo a la plancha + ensalada" },
+  { day: "Jueves", breakfast: "Huevo revuelto + fruta", lunch: "Pasta integral con verduras y atún", dinner: "Sopa de verduras + queso fresco" },
+  { day: "Viernes", breakfast: "Yogur natural con avena y fruta", lunch: "Merluza o similar a la plancha + arroz integral", dinner: "Ensalada con huevo duro y aguacate" },
+  { day: "Sábado", breakfast: "Tostada integral, tomate y AOVE + café", lunch: "Comida libre moderada (puedes incluir alcohol ocasional aquí)", dinner: "Verdura salteada + pescado o pollo" },
+  { day: "Domingo", breakfast: "Huevo revuelto + fruta", lunch: "Arroz o legumbre con verdura", dinner: "Crema de verduras ligera" }
+];
+let DIET_MENU = loadState('cfg-diet');
+if(!Array.isArray(DIET_MENU) || DIET_MENU.length === 0) DIET_MENU = DEFAULT_DIET_MENU;
+
 function renderDiet(){
+  const tbody = document.getElementById('diet-menu-body');
+  if(tbody) {
+    tbody.innerHTML = DIET_MENU.map(d => `<tr><td>${d.day}</td><td>${d.breakfast}</td><td>${d.lunch}</td><td>${d.dinner}</td></tr>`).join('');
+  }
+
   const el=document.getElementById('diet-week');
   const state=loadState('diet-state');
   let html = '<div class="card"><p><strong>Marca los días que has seguido el menú</strong></p>';
-  DIET_DAYS.forEach((d,i)=>{
+  DIET_MENU.forEach((d,i)=>{
     const key=`dia_${i}`;
     const checked = state[key] ? 'checked' : '';
-    html += `<div class="meal-check"><input type="checkbox" id="diet_${i}" data-key="${key}" ${checked}><label for="diet_${i}">${d}</label></div>`;
+    html += `<div class="meal-check"><input type="checkbox" id="diet_${i}" data-key="${key}" ${checked}><label for="diet_${i}">${d.day}</label></div>`;
   });
   html += '</div>';
   el.innerHTML = html;
@@ -550,7 +760,7 @@ function renderDiet(){
 }
 
 /* ---------- ESTIRAMIENTOS ---------- */
-const STRETCHES = [
+const DEFAULT_STRETCHES = [
   ["Rodillas al pecho", "Tumbado boca arriba, lleva ambas rodillas al pecho y abraza suavemente. Descarga toda la zona lumbar. 30-40 segundos, 2 veces."],
   ["Rodilla al pecho, una pierna", "Igual que el anterior pero con una sola pierna, la otra apoyada y flexionada en el suelo. 20-30 segundos por lado."],
   ["Estiramiento de piriforme", "Tumbado boca arriba, cruza un tobillo sobre la rodilla contraria y tira suavemente de la pierna de abajo hacia el pecho. Alivia mucho la zona entre columna y nalga. 30 segundos por lado."],
@@ -560,6 +770,8 @@ const STRETCHES = [
   ["Postura del niño (suave)", "De rodillas, siéntate sobre los talones y estira los brazos hacia delante, dejando caer el pecho hacia el suelo sin forzar. Si molesta, reduce el rango. 30-40 segundos."],
   ["Rotación de rodillas tumbado", "Tumbado boca arriba, rodillas flexionadas juntas, deja caer ambas rodillas suavemente hacia un lado y luego hacia el otro, sin forzar el giro. 20 segundos por lado."]
 ];
+let STRETCHES = loadState('cfg-stretches');
+if(!Array.isArray(STRETCHES) || STRETCHES.length === 0) STRETCHES = DEFAULT_STRETCHES;
 
 function renderStretches(){
   const el=document.getElementById('stretch-list');
@@ -629,7 +841,7 @@ document.getElementById('h-save').addEventListener('click',()=>{
 });
 
 /* ---------- CUIDADO PERSONAL ---------- */
-const CARE_ITEMS = [
+const DEFAULT_CARE_ITEMS = [
   ["dientes_manana","Cepillado de dientes (mañana)"],
   ["dientes_noche","Cepillado de dientes (noche)"],
   ["crema_facial","Crema facial"],
@@ -638,6 +850,9 @@ const CARE_ITEMS = [
   ["unas","Corte o cuidado de uñas"],
   ["proteccion_solar","Protección solar"]
 ];
+let CARE_ITEMS = loadState('cfg-care');
+if(!Array.isArray(CARE_ITEMS) || CARE_ITEMS.length === 0) CARE_ITEMS = DEFAULT_CARE_ITEMS;
+
 function renderCareChecklist(fecha){
   const data = loadState('care-log');
   const entry = data[fecha] || {};
@@ -787,6 +1002,65 @@ function renderEstadisticas() {
     },
     options: { responsive: true, maintainAspectRatio: false }
   });
+
+  // Calculate Exercise Compliance
+  let totalEx = 0;
+  let doneEx = 0;
+  const days = buildWeekdays();
+  const stEx = loadState('lumbar-plan-state');
+  for (const d of days) {
+    if (d.date > TODAY) break; // Only count up to today
+    d.exIds.forEach(exId => {
+      totalEx++;
+      if (stEx[`${d.key}_${exId}`]) doneEx++;
+    });
+    totalEx++; // Stretches routine
+    if (stEx[`${d.key}_rutina_estiramientos`]) doneEx++;
+  }
+  const pctEx = totalEx === 0 ? 0 : Math.round((doneEx/totalEx)*100);
+
+  initOrUpdateChart('chart-ejercicio-cumplimiento', {
+    type: 'doughnut',
+    data: {
+      labels: ['Completado', 'Pendiente'],
+      datasets: [{
+        data: [doneEx, Math.max(0, totalEx - doneEx)],
+        backgroundColor: ['#0f6e56', '#e0e0e0']
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: pctEx + '% de Cumplimiento' } }
+    }
+  });
+
+  // Calculate Care Compliance
+  const stCare = loadState('care-log');
+  let totalCare = 0;
+  let doneCare = 0;
+  Object.keys(stCare).forEach(dt => {
+    const entry = stCare[dt];
+    CARE_ITEMS.forEach(([id]) => {
+      totalCare++;
+      if(entry[id]) doneCare++;
+    });
+  });
+  const pctCare = totalCare === 0 ? 0 : Math.round((doneCare/totalCare)*100);
+
+  initOrUpdateChart('chart-cuidado', {
+    type: 'doughnut',
+    data: {
+      labels: ['Completado', 'Omitido'],
+      datasets: [{
+        data: [doneCare, Math.max(0, totalCare - doneCare)],
+        backgroundColor: ['#85b7eb', '#e0e0e0']
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: pctCare + '% de Cumplimiento' } }
+    }
+  });
 }
 
 /* ---------- TABS ---------- */
@@ -841,34 +1115,33 @@ document.getElementById('dbx-save-btn').addEventListener('click', () => {
   bundle._exportado = new Date().toISOString();
   const file = new Blob([JSON.stringify(bundle)], { type: 'application/json' });
   dbx.filesUpload({ path: '/plan_lumbar_datos.json', contents: file, mode: 'overwrite' })
-    .then(() => alert('Datos guardados en Dropbox correctamente.'))
-    .catch(err => { console.error(err); alert('Error al guardar en Dropbox.'); });
+    .then(() => showAlert('Datos guardados en Dropbox correctamente.'))
+    .catch(err => { console.error(err); showAlert('Error al guardar en Dropbox.'); });
 });
 
 document.getElementById('dbx-load-btn').addEventListener('click', () => {
   if(!dbx) return;
   dbx.filesDownload({ path: '/plan_lumbar_datos.json' })
-    .then(response => {
+    .then(res => {
       const reader = new FileReader();
-      reader.onload = function() {
+      reader.onload = () => {
         try {
           const bundle = JSON.parse(reader.result);
-          const merge = confirm('Aceptar = fusionar con los datos locales.\\nCancelar = reemplazar todo por lo de Dropbox.');
           DATA_KEYS.forEach(k => {
-            if(!(k in bundle)) return;
-            if(merge) saveState(k, Object.assign({}, loadState(k), bundle[k]));
-            else saveState(k, bundle[k]);
+            if (bundle[k]) saveState(k, bundle[k]);
           });
-          renderExercise(); renderDiet(); renderStretches(); renderHealth(); renderCare(); renderNotes();
-          alert('Datos cargados de Dropbox correctamente.');
-        } catch(e) { alert('Error al procesar el archivo de Dropbox.'); }
+          renderExercise(); renderDiet(); renderStretches(); renderHealth(); renderCare(); renderNotes(); renderEstadisticas();
+          showAlert('Datos cargados de Dropbox correctamente.');
+        } catch(e) {
+          showAlert('Error al procesar el archivo descargado.');
+        }
       };
-      reader.readAsText(response.result.fileBlob);
+      reader.readAsText(res.result.fileBlob);
     })
     .catch(err => {
       console.error(err);
-      if(err.status === 409) alert('El archivo no existe en Dropbox aún. Guarda primero.');
-      else alert('Error al cargar de Dropbox.');
+      if(err.status===409) showAlert('El archivo no existe todavía en Dropbox. Guárdalo primero.');
+      else showAlert('Error al cargar de Dropbox.');
     });
 });
 /* ---------- PWA INSTALL ---------- */
