@@ -10,6 +10,7 @@
 <meta name="theme-color" content="#0f6e56">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/10.33.0/Dropbox-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   :root{
     --surface-0:#f4f3ef; --surface-1:#ffffff;
@@ -150,6 +151,7 @@
     <button class="tab-btn" data-tab="salud">Seguimiento diario</button>
     <button class="tab-btn" data-tab="cuidado">Cuidado personal</button>
     <button class="tab-btn" data-tab="notas">Notas</button>
+    <button class="tab-btn" data-tab="estadisticas">Estadísticas</button>
   </div>
 
   <div id="tab-ejercicio" class="tabpanel active">
@@ -269,6 +271,27 @@
     <div class="card">
       <p><strong>Notas anteriores</strong></p>
       <div id="notes-hist"></div>
+    </div>
+  </div>
+
+  <div id="tab-estadisticas" class="tabpanel">
+    <div class="card">
+      <p><strong>Evolución de Peso y Dolor Lumbar</strong></p>
+      <div style="position: relative; height:250px; width:100%">
+        <canvas id="chart-peso-dolor"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <p><strong>Tensión Arterial</strong></p>
+      <div style="position: relative; height:250px; width:100%">
+        <canvas id="chart-tension"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <p><strong>Hábitos (Agua y Sueño)</strong></p>
+      <div style="position: relative; height:250px; width:100%">
+        <canvas id="chart-habitos"></canvas>
+      </div>
     </div>
   </div>
 
@@ -687,6 +710,71 @@ const DATA_KEYS = ['lumbar-plan-state','diet-state','stretch-state','health-log'
 
 // Funciones de exportación locales eliminadas en favor de Dropbox
 
+/* ---------- ESTADISTICAS ---------- */
+let charts = {};
+function initOrUpdateChart(id, config) {
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx, config);
+}
+
+function renderEstadisticas() {
+  const healthData = loadState('health-log');
+  const dates = Object.keys(healthData).sort((a,b) => new Date(a) - new Date(b));
+  const recentDates = dates.slice(-30);
+  
+  const labels = recentDates.map(d => d.slice(8,10)+'/'+d.slice(5,7));
+  const pesos = recentDates.map(d => healthData[d].peso || null);
+  const dolores = recentDates.map(d => healthData[d].dolor || null);
+  const tasis = recentDates.map(d => healthData[d].tasis || null);
+  const tadia = recentDates.map(d => healthData[d].tadia || null);
+  const sueno = recentDates.map(d => healthData[d].sueno || null);
+  const agua = recentDates.map(d => healthData[d].agua || null);
+
+  initOrUpdateChart('chart-peso-dolor', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Peso (kg)', data: pesos, borderColor: '#0f6e56', backgroundColor: '#0f6e56', yAxisID: 'y', spanGaps: true },
+        { label: 'Dolor (0-10)', data: dolores, borderColor: '#a32d2d', backgroundColor: '#a32d2d', borderDash: [5, 5], yAxisID: 'y1', spanGaps: true }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        y: { type: 'linear', display: true, position: 'left', title: {display:true, text:'Peso (kg)'} },
+        y1: { type: 'linear', display: true, position: 'right', min: 0, max: 10, title: {display:true, text:'Dolor'} }
+      }
+    }
+  });
+
+  initOrUpdateChart('chart-tension', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Sistólica', data: tasis, borderColor: '#d4537e', backgroundColor: '#d4537e', spanGaps: true },
+        { label: 'Diastólica', data: tadia, borderColor: '#85b7eb', backgroundColor: '#85b7eb', spanGaps: true }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  initOrUpdateChart('chart-habitos', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Sueño (h)', data: sueno, backgroundColor: '#fac775' },
+        { label: 'Agua (vasos)', data: agua, backgroundColor: '#85b7eb' }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+}
+
 /* ---------- TABS ---------- */
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -694,6 +782,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'estadisticas') renderEstadisticas();
   });
 });
 
@@ -703,6 +792,7 @@ renderStretches();
 renderHealth();
 renderCare();
 renderNotes();
+renderEstadisticas();
 
 /* ---------- DROPBOX SYNC ---------- */
 const CLIENT_ID = 'tn0qzpzapx2b1mw';
