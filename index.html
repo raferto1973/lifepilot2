@@ -135,9 +135,15 @@
   .modal-btn.cancel { background:var(--surface-0); color:var(--text); }
   .modal-btn.ok { background:var(--border-accent); color:#fff; }
   .modal-btn.danger { background:#a32d2d; color:#fff; }
-  .settings-row { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding:10px 0; gap:10px;}
-  .settings-row input { flex:1; }
-  .settings-row button { margin:0; padding:6px; }
+  .modal-btn.danger { background:#a32d2d; color:#fff; }
+  
+  /* Ajustes UI */
+  .settings-section { background: var(--surface-0); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
+  .settings-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; gap:8px; border-bottom:1px solid rgba(0,0,0,0.05); }
+  .settings-row:last-child { border-bottom:none; }
+  .settings-row input { padding: 8px; font-size: 13px; margin: 0; background: var(--surface-1); }
+  .settings-row button { margin:0; padding:6px 10px; font-size: 13px; }
+  .settings-row strong { font-size: 14px; color: var(--text); margin-bottom: 4px; display: block; }
 </style>
 </head>
 <body>
@@ -149,7 +155,7 @@
     </div>
     <div style="display:flex; gap:8px;">
       <button class="reset" id="pwa-install-btn" style="display:none; color:var(--border-accent); border-color:var(--border-accent)"><i class="ti ti-device-mobile" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Instalar App</button>
-      <button class="reset" id="settings-btn" style="padding: 6px;"><i class="ti ti-settings" style="font-size:18px;"></i></button>
+      <button class="reset" id="settings-btn"><i class="ti ti-adjustments" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Ajustes</button>
     </div>
   </div>
   <p class="sub" style="margin-top: 0;">Plan de recuperación, ejercicio y alimentación &middot; 31 julio &ndash; 31 diciembre 2026</p>
@@ -407,11 +413,13 @@ document.getElementById('settings-btn').addEventListener('click', () => {
 function renderSettingsUI() {
   const dietList = document.getElementById('settings-diet-list');
   dietList.innerHTML = DIET_MENU.map((d,i) => `
-    <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:5px;" data-idx="${i}">
+    <div class="settings-section" data-idx="${i}">
       <strong>${d.day}</strong>
-      <input type="text" class="diet-b" value="${d.breakfast}" placeholder="Desayuno">
-      <input type="text" class="diet-l" value="${d.lunch}" placeholder="Comida">
-      <input type="text" class="diet-d" value="${d.dinner}" placeholder="Cena">
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <input type="text" class="diet-b" value="${d.breakfast}" placeholder="Desayuno">
+        <input type="text" class="diet-l" value="${d.lunch}" placeholder="Comida">
+        <input type="text" class="diet-d" value="${d.dinner}" placeholder="Cena">
+      </div>
     </div>
   `).join('');
 
@@ -420,7 +428,7 @@ function renderSettingsUI() {
     <div class="settings-row stretch-item">
       <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
         <input type="text" class="st-name" value="${s[0]}" placeholder="Nombre">
-        <input type="text" class="st-desc" value="${s[1]}" placeholder="Descripción">
+        <input type="text" class="st-desc" value="${s[1]}" placeholder="Descripción corta">
       </div>
       <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
     </div>
@@ -429,7 +437,9 @@ function renderSettingsUI() {
   const careList = document.getElementById('settings-care-list');
   careList.innerHTML = CARE_ITEMS.map((c,i) => `
     <div class="settings-row care-item">
-      <input type="text" class="care-label" value="${c[1]}" placeholder="Nombre de la tarea">
+      <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+        <input type="text" class="care-label" value="${c[1]}" placeholder="Nombre de la tarea">
+      </div>
       <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
     </div>
   `).join('');
@@ -452,7 +462,9 @@ function addCareRow() {
   const div = document.createElement('div');
   div.className = 'settings-row care-item';
   div.innerHTML = `
-    <input type="text" class="care-label" placeholder="Nombre de la tarea">
+    <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+      <input type="text" class="care-label" placeholder="Nombre de la tarea">
+    </div>
     <button class="modal-btn danger" onclick="this.closest('.settings-row').remove()"><i class="ti ti-trash"></i></button>
   `;
   document.getElementById('settings-care-list').appendChild(div);
