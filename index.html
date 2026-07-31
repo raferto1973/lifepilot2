@@ -275,6 +275,15 @@
   </div>
 
   <div id="tab-estadisticas" class="tabpanel">
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px">
+      <strong>Rango de tiempo:</strong>
+      <select id="chart-filter" style="padding:6px; border-radius:6px; border:1px solid #ccc; font-family:inherit;">
+        <option value="7">Últimos 7 días</option>
+        <option value="14">Últimos 14 días</option>
+        <option value="30" selected>Últimos 30 días</option>
+        <option value="all">Todo el historial</option>
+      </select>
+    </div>
     <div class="card">
       <p><strong>Evolución de Peso y Dolor Lumbar</strong></p>
       <div style="position: relative; height:250px; width:100%">
@@ -720,9 +729,14 @@ function initOrUpdateChart(id, config) {
 }
 
 function renderEstadisticas() {
+  const filterVal = document.getElementById('chart-filter') ? document.getElementById('chart-filter').value : '30';
   const healthData = loadState('health-log');
   const dates = Object.keys(healthData).sort((a,b) => new Date(a) - new Date(b));
-  const recentDates = dates.slice(-30);
+  
+  let recentDates = dates;
+  if (filterVal !== 'all') {
+    recentDates = dates.slice(-parseInt(filterVal, 10));
+  }
   
   const labels = recentDates.map(d => d.slice(8,10)+'/'+d.slice(5,7));
   const pesos = recentDates.map(d => healthData[d].peso || null);
@@ -785,6 +799,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if (btn.dataset.tab === 'estadisticas') renderEstadisticas();
   });
 });
+
+document.getElementById('chart-filter').addEventListener('change', renderEstadisticas);
 
 renderExercise();
 renderDiet();
