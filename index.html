@@ -144,6 +144,12 @@
   .settings-row input { padding: 8px; font-size: 13px; margin: 0; background: var(--surface-1); }
   .settings-row button { margin:0; padding:6px 10px; font-size: 13px; }
   .settings-row strong { font-size: 14px; color: var(--text); margin-bottom: 4px; display: block; }
+  
+  /* Gráficas Responsive */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 450px) {
+    .charts-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -321,16 +327,16 @@
         <canvas id="chart-habitos"></canvas>
       </div>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div class="charts-grid">
       <div class="card">
         <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Cuidado Personal</strong></p>
-        <div style="position: relative; height:150px; width:100%">
+        <div style="position: relative; height:180px; width:100%">
           <canvas id="chart-cuidado"></canvas>
         </div>
       </div>
       <div class="card">
         <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Ejercicio</strong></p>
-        <div style="position: relative; height:150px; width:100%">
+        <div style="position: relative; height:180px; width:100%">
           <canvas id="chart-ejercicio-cumplimiento"></canvas>
         </div>
       </div>
