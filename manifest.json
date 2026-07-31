@@ -1,0 +1,20 @@
+{
+  "name": "Life Pilot",
+  "short_name": "Life Pilot",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f3ef",
+  "theme_color": "#0f6e56",
+  "icons": [
+    {
+      "src": "icon_64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

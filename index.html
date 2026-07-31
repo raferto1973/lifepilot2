@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de recuperación, ejercicio y alimentación</title>
+<link rel="icon" type="image/png" href="icon_64x64.png">
+<link rel="apple-touch-icon" href="icon_256x256.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f6e56">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/10.33.0/Dropbox-sdk.min.js"></script>
+<style>
+  :root{
+    --surface-0:#f4f3ef; --surface-1:#ffffff;
+    --text-primary:#1f1e1b; --text-secondary:#5f5e5a; --text-muted:#8a8980;
+    --border:#e2e0d8; --border-accent:#0f6e56; --text-danger:#a32d2d; --radius:8px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --surface-0:#17171a; --surface-1:#222226;
+      --text-primary:#eceae2; --text-secondary:#b4b2a9; --text-muted:#888780;
+      --border:#3a3a3d; --border-accent:#5dcaa5; --text-danger:#f09595;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:1.5rem 1rem 4rem;background:var(--surface-0);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-size:19px;font-weight:600;margin:0 0 4px}
+  h2{font-size:16px;font-weight:600;margin:2rem 0 .75rem}
+  .sub{font-size:13px;color:var(--text-secondary);margin:0 0 1.5rem}
+  .tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+  .tab-btn{background:var(--surface-1);border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;
+    font-size:13px;cursor:pointer;color:var(--text-secondary)}
+  .tab-btn.active{border:2px solid var(--border-accent);color:var(--text-primary);font-weight:600}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block}
+  .top-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:1.25rem;flex-wrap:wrap}
+  .progress-pill{background:var(--surface-1);border:0.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px}
+  .progress-pill b{color:var(--border-accent)}
+  button.reset{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius);
+    padding:6px 12px;font-size:12px;color:var(--text-secondary);cursor:pointer}
+  button.reset:hover{background:var(--surface-1)}
+  .week{margin-bottom:14px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface-1)}
+  .week-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;user-select:none}
+  .week-head .wtitle{font-size:14px;font-weight:600}
+  .week-head .wsub{font-size:12px;color:var(--text-secondary);margin-left:8px;font-weight:400}
+  .week-head i{transition:transform .15s;color:var(--text-secondary)}
+  .week.open .week-head i{transform:rotate(180deg)}
+  .week-body{display:none;border-top:0.5px solid var(--border)}
+  .week.open .week-body{display:block}
+  .day{padding:12px 16px;border-bottom:0.5px solid var(--border)}
+  .day:last-child{border-bottom:none}
+  .day.today{background:color-mix(in srgb, var(--border-accent) 8%, transparent)}
+  .day-head{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .day-date{font-size:13px;font-weight:600}
+  .phase-tag{font-size:10px;padding:1px 7px;border-radius:9px;font-weight:600}
+  .ex{display:flex;align-items:flex-start;gap:8px;padding:5px 0}
+  .ex input{margin-top:4px;cursor:pointer;flex-shrink:0}
+  .ex label{flex:1;cursor:pointer}
+  .ex .exname{font-size:13px;font-weight:600;display:block}
+  .ex .exdetail{font-size:12.5px;color:var(--text-secondary);display:block;margin-top:1px}
+  .ex.done .exname,.ex.done .exdetail{color:var(--text-muted);text-decoration:line-through}
+  .warn{font-size:12px;margin:8px 0 0;color:var(--text-danger)}
+  .warn i{font-size:13px;vertical-align:-2px;margin-right:4px}
+  .p1{background:#5DCAA5;color:#04342C}
+  .p2{background:#85B7EB;color:#042C53}
+  .p3{background:#FAC775;color:#412402}
+  .p4{background:#97C459;color:#173404}
+  .p5{background:#D4537E;color:#4B1528}
+  .card{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+  .card p{font-size:13.5px;margin:0 0 6px}
+  .card ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.7}
+  table.menu{width:100%;border-collapse:collapse;font-size:13px;margin-top:.5rem}
+  table.menu th, table.menu td{border-bottom:0.5px solid var(--border);text-align:left;padding:8px 6px;vertical-align:top}
+  table.menu th{color:var(--text-secondary);font-weight:600;font-size:12px}
+  .meal-check{display:flex;align-items:center;gap:6px;font-size:12.5px;margin-top:4px}
+  .badge{display:inline-block;font-size:11px;padding:1px 8px;border-radius:9px;background:var(--surface-0);color:var(--text-secondary);margin-left:6px}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px}
+  .field label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+  .field input, .field textarea{width:100%;padding:7px 8px;border-radius:var(--radius);border:0.5px solid var(--border);
+    background:var(--surface-0);color:var(--text-primary);font-size:13px;font-family:inherit}
+  .field textarea{resize:vertical;min-height:80px}
+  .chk-row{display:flex;align-items:center;gap:6px;font-size:13px;padding:5px 0}
+  .save-btn{background:var(--border-accent);color:#fff;border:none;border-radius:var(--radius);
+    padding:8px 18px;font-size:13px;cursor:pointer;font-weight:600}
+  .save-btn:hover{opacity:.9}
+  table.hist{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:1rem}
+  table.hist th, table.hist td{border-bottom:0.5px solid var(--border);text-align:left;padding:6px 8px}
+  table.hist th{color:var(--text-secondary);font-weight:600;font-size:11px}
+  .del-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px}
+  .del-btn:hover{color:var(--text-danger)}
+  .note-entry{border-bottom:0.5px solid var(--border);padding:10px 0}
+  .note-entry:last-child{border-bottom:none}
+  .note-date{font-size:12px;font-weight:600;color:var(--text-secondary);display:flex;justify-content:space-between}
+  .note-text{font-size:13.5px;margin-top:4px;white-space:pre-wrap}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .table-scroll table{min-width:520px}
+
+  @media (max-width:600px){
+    body{padding:1rem .75rem 3rem}
+    h1{font-size:17px}
+    .sub{font-size:12px;margin-bottom:1.1rem}
+    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;
+      margin-left:-.75rem;margin-right:-.75rem;padding-left:.75rem;padding-right:.75rem}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab-btn{flex-shrink:0;white-space:nowrap;padding:6px 12px;font-size:12.5px}
+    .top-bar{gap:8px}
+    .progress-pill{font-size:12px;padding:5px 10px}
+    button.reset{padding:5px 10px;font-size:11.5px}
+    .week-head{padding:10px 12px}
+    .week-head .wtitle{font-size:13px}
+    .week-head .wsub{display:block;margin-left:0;margin-top:2px}
+    .day{padding:10px 12px}
+    .card{padding:.85rem 1rem}
+    .form-grid{grid-template-columns:1fr 1fr;gap:10px}
+    table.menu{font-size:12px}
+    table.menu th, table.menu td{padding:6px 4px}
+  }
+  @media (max-width:380px){
+    .form-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 6px; flex-wrap:wrap; gap:10px;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <img src="icon_64x64.png" alt="Life Pilot Icon" style="width: 42px; height: 42px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <h1 style="margin: 0; font-size: 22px;">Life Pilot</h1>
+    </div>
+    <button class="reset" id="pwa-install-btn" style="display:none; color:var(--border-accent); border-color:var(--border-accent)"><i class="ti ti-device-mobile" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Instalar App</button>
+  </div>
+  <p class="sub" style="margin-top: 0;">Plan de recuperación, ejercicio y alimentación &middot; 31 julio &ndash; 31 diciembre 2026</p>
+
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <p style="margin:0;flex:1;min-width:200px">Sincroniza tus datos con Dropbox para acceder a tu plan desde cualquier dispositivo.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="reset" id="dbx-login-btn"><i class="ti ti-brand-dropbox" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Conectar Dropbox</button>
+      <button class="reset" id="dbx-load-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-cloud-download" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Cargar de Dropbox</button>
+      <button class="reset" id="dbx-save-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-cloud-upload" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Guardar en Dropbox</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="ejercicio">Ejercicio</button>
+    <button class="tab-btn" data-tab="dieta">Alimentación</button>
+    <button class="tab-btn" data-tab="estiramientos">Estiramientos</button>
+    <button class="tab-btn" data-tab="salud">Seguimiento diario</button>
+    <button class="tab-btn" data-tab="cuidado">Cuidado personal</button>
+    <button class="tab-btn" data-tab="notas">Notas</button>
+  </div>
+
+  <div id="tab-ejercicio" class="tabpanel active">
+    <div class="top-bar">
+      <div class="progress-pill">Progreso ejercicios: <b id="progress-text">0 / 0</b></div>
+      <button class="reset" id="reset-btn"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Reiniciar marcas</button>
+    </div>
+    <div id="weeks"></div>
+  </div>
+
+  <div id="tab-dieta" class="tabpanel">
+    <div class="card">
+      <p><strong>Objetivo:</strong> de 85,2 kg a 72 kg (171 cm, 53 años) de forma progresiva hasta el 31 de diciembre &mdash; un ritmo de aproximadamente 0,5-0,6 kg/semana, considerado saludable.</p>
+      <p><strong>Estimación orientativa:</strong> unas 1.800-2.000 kcal/día suelen generar ese ritmo de pérdida combinado con el ejercicio del plan. Es una referencia general, no una prescripción — coméntalo con tu médico o un dietista, sobre todo porque estás medicado para la hipertensión.</p>
+    </div>
+
+    <div class="card">
+      <p><strong>Principios generales</strong></p>
+      <ul>
+        <li>Reduce la sal añadida: cocina con especias, ajo, limón o hierbas en vez de sal, y evita procesados/embutidos y precocinados, que suelen llevar mucho sodio — importante con tu medicación para la tensión.</li>
+        <li>Verdura en comida y cena, fruta 2-3 veces al día.</li>
+        <li>Prioriza agua e infusiones. Alcohol ocasional (1-2 veces por semana, cantidad moderada) y Coca-Cola de vez en cuando está bien como excepción, no como costumbre diaria.</li>
+        <li>5 tomas moderadas al día (desayuno, comida, cena y 1-2 snacks) ayuda a no llegar con mucha hambre a las comidas principales.</li>
+        <li>Cocina sencilla: plancha, horno, salteado, cocido — sin necesidad de recetas complicadas.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <p><strong>Menú semanal orientativo</strong> (se repite cada semana, puedes rotar los días entre sí)</p>
+      <div class="table-scroll">
+      <table class="menu">
+        <tr><th>Día</th><th>Desayuno</th><th>Comida</th><th>Cena</th></tr>
+        <tr><td>Lunes</td><td>Tostada integral, tomate y AOVE + café</td><td>Lentejas con verdura + fruta</td><td>Pescado blanco al horno + verdura salteada</td></tr>
+        <tr><td>Martes</td><td>Yogur natural con avena y fruta</td><td>Pollo a la plancha, ensalada variada + pan integral</td><td>Crema de verduras + tortilla francesa</td></tr>
+        <tr><td>Miércoles</td><td>Tostada integral, tomate y AOVE + café</td><td>Garbanzos con verdura + fruta</td><td>Pavo a la plancha + ensalada</td></tr>
+        <tr><td>Jueves</td><td>Huevo revuelto + fruta</td><td>Pasta integral con verduras y atún</td><td>Sopa de verduras + queso fresco</td></tr>
+        <tr><td>Viernes</td><td>Yogur natural con avena y fruta</td><td>Merluza o similar a la plancha + arroz integral</td><td>Ensalada con huevo duro y aguacate</td></tr>
+        <tr><td>Sábado</td><td>Tostada integral, tomate y AOVE + café</td><td>Comida libre moderada (puedes incluir tu alcohol ocasional aquí)</td><td>Verdura salteada + pescado o pollo</td></tr>
+        <tr><td>Domingo</td><td>Huevo revuelto + fruta</td><td>Arroz o legumbre con verdura</td><td>Crema de verduras ligera</td></tr>
+      </table>
+      </div>
+      <p style="margin-top:10px"><strong>Snacks entre horas:</strong> fruta, un puñado de frutos secos naturales sin sal, o un yogur natural.</p>
+    </div>
+
+    <div id="diet-week" style="margin-top:1.5rem"></div>
+  </div>
+
+  <div id="tab-estiramientos" class="tabpanel">
+    <div class="card">
+      <p><strong>Antes de empezar</strong></p>
+      <ul>
+        <li>Estira solo hasta notar tensión suave, nunca dolor. Si un estiramiento te provoca dolor agudo o dolor que baja por la pierna, páralo.</li>
+        <li>Mejor en caliente: después de caminar unos minutos o tras la ducha, no en frío.</li>
+        <li>Movimientos lentos y controlados, sin rebotes ni tirones bruscos.</li>
+        <li>Evita la flexión de tronco hacia delante con las piernas rectas (tocarse las puntas de pie de pie) y las rotaciones bruscas de columna — son las posturas que más cargan tu zona lumbar-izquierda ahora mismo.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <p><strong>Rutina diaria recomendada</strong> (5-10 min, se puede hacer cualquier día, incluido fin de semana)</p>
+      <div id="stretch-list"></div>
+    </div>
+
+    <div class="card">
+      <p><strong>Evita por ahora</strong></p>
+      <ul>
+        <li>Estiramiento de isquiotibiales tocando puntas de pie de pie (mejor tumbado, como se indica arriba).</li>
+        <li>Torsiones profundas de columna sentado (tipo yoga "torsión espinal" forzada).</li>
+        <li>Flexiones profundas con carga (levantar peso doblando la espalda en vez de las rodillas).</li>
+        <li>Cualquier estiramiento que reproduzca el dolor entre columna y nalga del lado izquierdo.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="tab-salud" class="tabpanel">
+    <div class="card">
+      <p><strong>Registro del día</strong></p>
+      <div class="form-grid">
+        <div class="field"><label for="h-fecha">Fecha</label><input type="date" id="h-fecha"></div>
+        <div class="field"><label for="h-peso">Peso (kg)</label><input type="number" step="0.1" id="h-peso" placeholder="85.2"></div>
+        <div class="field"><label for="h-tasis">Tensión sistólica</label><input type="number" id="h-tasis" placeholder="130"></div>
+        <div class="field"><label for="h-tadia">Tensión diastólica</label><input type="number" id="h-tadia" placeholder="80"></div>
+        <div class="field"><label for="h-pulso">Pulso (lpm)</label><input type="number" id="h-pulso" placeholder="70"></div>
+        <div class="field"><label for="h-sueno">Horas de sueño</label><input type="number" step="0.5" id="h-sueno" placeholder="7"></div>
+        <div class="field"><label for="h-agua">Vasos de agua</label><input type="number" id="h-agua" placeholder="8"></div>
+        <div class="field"><label for="h-dolor">Dolor lumbar (0-10)</label><input type="number" min="0" max="10" id="h-dolor" placeholder="2"></div>
+      </div>
+      <div class="chk-row"><input type="checkbox" id="h-medicacion"><label for="h-medicacion">Medicación de la tensión tomada hoy</label></div>
+      <button class="save-btn" id="h-save" style="margin-top:10px">Guardar registro</button>
+    </div>
+    <div class="card">
+      <p><strong>Historial</strong></p>
+      <div id="health-hist"></div>
+    </div>
+  </div>
+
+  <div id="tab-cuidado" class="tabpanel">
+    <div class="card">
+      <p><strong>Registro del día</strong></p>
+      <div class="field" style="max-width:220px;margin-bottom:12px"><label for="c-fecha">Fecha</label><input type="date" id="c-fecha"></div>
+      <div id="care-checklist"></div>
+      <button class="save-btn" id="c-save" style="margin-top:10px">Guardar registro</button>
+    </div>
+    <div class="card">
+      <p><strong>Historial</strong></p>
+      <div id="care-hist"></div>
+    </div>
+  </div>
+
+  <div id="tab-notas" class="tabpanel">
+    <div class="card">
+      <p><strong>Nota del día</strong></p>
+      <div class="field" style="max-width:220px;margin-bottom:12px"><label for="n-fecha">Fecha</label><input type="date" id="n-fecha"></div>
+      <div class="field"><label for="n-texto">Sensaciones, dolor, cualquier tema médico u observación</label><textarea id="n-texto" placeholder="¿Cómo te has encontrado hoy?"></textarea></div>
+      <button class="save-btn" id="n-save" style="margin-top:10px">Guardar nota</button>
+    </div>
+    <div class="card">
+      <p><strong>Notas anteriores</strong></p>
+      <div id="notes-hist"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---------- EJERCICIO ---------- */
+const EXERCISES = {
+  caminar_suave: ["Caminar suave", "10-20 min en llano, ritmo cómodo. Espalda erguida, pasos cortos y regulares. Si notas molestia, baja el ritmo pero no pares del todo."],
+  caminar_moderado: ["Caminar moderado", "25-35 min, puedes incluir alguna cuesta suave. Respiración relajada; si aparece dolor agudo, vuelve a terreno llano."],
+  caminar_normal: ["Caminar a ritmo normal", "30-40 min al ritmo que llevabas antes de la lesión, prestando atención a cómo responde la zona lumbar."],
+  caminar_rapido: ["Caminar rápido / a paso ligero", "30-40 min a un ritmo que te suba algo la pulsación pero te permita hablar sin ahogarte."],
+  piscina_caminar: ["Piscina: caminar en el agua", "15-20 min caminando en agua a la altura del pecho, avanzando despacio con los brazos relajados."],
+  piscina_nado_suave: ["Piscina: nado suave", "15-20 min de espalda o crol relajado. Evita braza con latigazo fuerte de piernas."],
+  piscina_aquagym: ["Piscina: aquagym o sesión larga", "20-30 min combinando nado suave con ejercicios de piernas y core en el agua."],
+  plancha_rodillas: ["Plancha de rodillas", "Apóyate en antebrazos y rodillas, zona lumbar neutra, abdomen ligeramente activado. 3-4 series de 10-15 segundos."],
+  puente_gluteo: ["Puente de glúteo", "Tumbado boca arriba, rodillas flexionadas, eleva la cadera apretando glúteos 10 segundos y baja despacio. 8 repeticiones."],
+  puente_una_pierna: ["Puente a una pierna", "Igual que el puente de glúteo pero con una pierna estirada en el aire. 6-8 repeticiones por lado."],
+  estiramiento_cadera: ["Estiramiento de cadera", "De rodillas, adelanta una pierna en 90°, estira la otra hacia atrás e inclina el peso hacia delante. 30 segundos por lado."],
+  estiramiento_piriforme: ["Estiramiento de piriforme", "Tumbado boca arriba, cruza un tobillo sobre la rodilla contraria y tira de la pierna de abajo hacia el pecho. 30 segundos por lado."],
+  estiramiento_isquios: ["Estiramiento de isquiotibiales", "Tumbado, eleva una pierna estirada sujetando con una toalla detrás del muslo, sin forzar la rodilla. 30 segundos por lado."],
+  estiramientos_generales: ["Estiramientos generales", "Rutina corta de 5-8 minutos: cuello, hombros, espalda, isquios y gemelos, cada uno 20-30 segundos."],
+  gato_camello: ["Gato-camello", "A cuatro patas, alterna arquear la espalda hacia arriba y hundirla suavemente hacia abajo, movimiento lento. 10 repeticiones."],
+  bird_dog: ["Bird-dog", "A cuatro patas, extiende brazo y pierna contraria a la vez, zona lumbar estable sin rotar la cadera. Mantén 10 segundos, 8 repeticiones por lado."],
+  sentadilla_silla: ["Sentadilla a silla", "De pie frente a una silla, baja controladamente sin llegar a tocar, y vuelve a subir. 10-12 repeticiones."],
+  plancha_lateral_corta: ["Plancha lateral corta", "Apoyado de lado sobre el antebrazo, eleva la cadera manteniendo el cuerpo en línea recta. 10-15 segundos por lado."],
+  foam_roller: ["Foam roller en glúteo/cadera", "Pasa el rodillo de espuma por glúteo y zona lateral de la cadera, despacio, sin llegar a dolor agudo. 1-2 min por lado."],
+  bici_suave: ["Bici suave", "15-20 min en bici estática o llano, resistencia baja, sillín a la altura correcta."],
+  fuerza_funcional: ["Rutina de fuerza funcional", "Sentadilla a silla, puente de glúteo, plancha y remo con banda o botellas de agua, 2-3 series de 10-12 repeticiones cada uno."],
+  moto_corta: ["Moto: sesión corta", "Solo si tu fisio o médico te ha dado el ok. Trayecto corto en llano, evitando baches. Para de inmediato si notas molestia."]
+};
+
+const PHASES = {
+  1: {name:"Fase 1 · control y movilidad", cls:"p1", warn:"Evitar moto, karts, cargar peso",
+      week:[["caminar_suave","plancha_rodillas","puente_gluteo"],
+            ["piscina_caminar","estiramiento_cadera"],
+            ["caminar_suave","estiramiento_piriforme"],
+            ["caminar_suave","plancha_rodillas","puente_gluteo"],
+            ["piscina_caminar","estiramiento_cadera"]]},
+  2: {name:"Fase 2 · progresión activa", cls:"p2", warn:"Seguir sin moto ni karts",
+      week:[["caminar_moderado","plancha_rodillas","puente_gluteo"],
+            ["piscina_nado_suave","gato_camello"],
+            ["bird_dog","estiramiento_isquios"],
+            ["caminar_moderado","plancha_rodillas","puente_gluteo"],
+            ["piscina_nado_suave","bird_dog"]]},
+  3: {name:"Fase 3 · fortalecimiento", cls:"p3", warn:"Valorar con el fisio antes de probar la moto",
+      week:[["sentadilla_silla","puente_una_pierna","plancha_lateral_corta"],
+            ["piscina_aquagym"],
+            ["bici_suave","gato_camello"],
+            ["foam_roller","sentadilla_silla"],
+            ["piscina_aquagym","estiramientos_generales"]]},
+  4: {name:"Fase 4 · consolidación", cls:"p4", warn:"Dolor con irradiación a la pierna = parar y consultar",
+      week:[["fuerza_funcional"],
+            ["bici_suave"],
+            ["moto_corta"],
+            ["fuerza_funcional"],
+            ["caminar_normal","estiramientos_generales"]]},
+  5: {name:"Fase 5 · rutina de crucero", cls:"p5", warn:"Progresa poco a poco: sube repeticiones o ritmo solo si no hay molestia lumbar",
+      week:[["fuerza_funcional","plancha_lateral_corta"],
+            ["caminar_rapido"],
+            ["fuerza_funcional","gato_camello"],
+            ["piscina_nado_suave"],
+            ["caminar_normal","estiramientos_generales"]]}
+};
+
+const PHASE_RANGES = [
+  {phase:1, start:0,   end:10},
+  {phase:2, start:11,  end:24},
+  {phase:3, start:25,  end:38},
+  {phase:4, start:39,  end:51},
+  {phase:5, start:52,  end:153}
+];
+
+const START = new Date(2026,6,31);
+const END = new Date(2026,11,31);
+const TOTAL_DAYS = Math.round((END-START)/86400000)+1;
+const TODAY = new Date(2026,6,31);
+
+function fmtDate(d){
+  const dias=["dom","lun","mar","mié","jué","vié","sáb"];
+  const meses=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  return `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]}`;
+}
+function isSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
+
+function buildWeekdays(){
+  const days=[];
+  for(let i=0;i<TOTAL_DAYS;i++){
+    const date=new Date(START); date.setDate(START.getDate()+i);
+    const dow=date.getDay();
+    if(dow===0||dow===6) continue; // saltar fin de semana
+    const range=PHASE_RANGES.find(r=>i>=r.start&&i<=r.end);
+    const phase=PHASES[range.phase];
+    const weekdayIndex=dow-1; // lunes=0 ... viernes=4
+    const exIds=phase.week[weekdayIndex];
+    days.push({index:i,date,phaseNum:range.phase,phase,exIds,key:date.toISOString().slice(0,10)});
+  }
+  return days;
+}
+
+function loadState(k){ try{return JSON.parse(localStorage.getItem(k)||'{}');}catch(e){return {};} }
+function saveState(k,state){ try{localStorage.setItem(k, JSON.stringify(state));}catch(e){} }
+
+function groupByWeek(days){
+  const weeks=[];
+  let current=[];
+  let currentMonday=null;
+  days.forEach(d=>{
+    const monday=new Date(d.date);
+    monday.setDate(monday.getDate()-(monday.getDay()-1));
+    const key=monday.toISOString().slice(0,10);
+    if(key!==currentMonday){
+      if(current.length) weeks.push(current);
+      current=[]; currentMonday=key;
+    }
+    current.push(d);
+  });
+  if(current.length) weeks.push(current);
+  return weeks;
+}
+
+function renderExercise(){
+  const days=buildWeekdays();
+  const weeks=groupByWeek(days);
+  const weeksEl=document.getElementById('weeks');
+  weeksEl.innerHTML='';
+  let wnum=0;
+
+  weeks.forEach(chunk=>{
+    wnum++;
+    const weekDiv=document.createElement('div');
+    weekDiv.className='week';
+    const containsToday=chunk.some(d=>isSameDay(d.date,TODAY));
+    if(containsToday) weekDiv.classList.add('open');
+
+    const head=document.createElement('div');
+    head.className='week-head';
+    head.innerHTML=`<span><span class="wtitle">Semana ${wnum}</span><span class="wsub">${fmtDate(chunk[0].date)} &ndash; ${fmtDate(chunk[chunk.length-1].date)}</span></span><i class="ti ti-chevron-down"></i>`;
+    head.addEventListener('click',()=>weekDiv.classList.toggle('open'));
+    weekDiv.appendChild(head);
+
+    const body=document.createElement('div');
+    body.className='week-body';
+
+    chunk.forEach(d=>{
+      const dayDiv=document.createElement('div');
+      dayDiv.className='day'+(isSameDay(d.date,TODAY)?' today':'');
+      const headRow=document.createElement('div');
+      headRow.className='day-head';
+      headRow.innerHTML=`<span class="day-date">${fmtDate(d.date)}</span><span class="phase-tag ${d.phase.cls}">Fase ${d.phaseNum}</span>`;
+      dayDiv.appendChild(headRow);
+
+      d.exIds.forEach(exId=>{
+        const [name,detail]=EXERCISES[exId];
+        const exKey=`${d.key}_${exId}`;
+        const state=loadState('lumbar-plan-state');
+        const isDone=!!state[exKey];
+        const row=document.createElement('div');
+        row.className='ex'+(isDone?' done':'');
+        const cbId=`cb_${exKey}`;
+        row.innerHTML=`<input type="checkbox" id="${cbId}" ${isDone?'checked':''}>
+          <label for="${cbId}"><span class="exname">${name}</span><span class="exdetail">${detail}</span></label>`;
+        const cb=row.querySelector('input');
+        cb.addEventListener('change',()=>{
+          const st=loadState('lumbar-plan-state');
+          if(cb.checked) st[exKey]=true; else delete st[exKey];
+          saveState('lumbar-plan-state',st);
+          row.classList.toggle('done',cb.checked);
+          updateExProgress();
+        });
+        dayDiv.appendChild(row);
+      });
+
+      {
+        const stretchKey=`${d.key}_rutina_estiramientos`;
+        const state=loadState('lumbar-plan-state');
+        const isDone=!!state[stretchKey];
+        const row=document.createElement('div');
+        row.className='ex'+(isDone?' done':'');
+        const cbId=`cb_${stretchKey}`;
+        row.innerHTML=`<input type="checkbox" id="${cbId}" ${isDone?'checked':''}>
+          <label for="${cbId}"><span class="exname">Rutina de estiramientos</span><span class="exdetail">8 estiramientos, 5-10 min &middot; ver detalle en la pestaña Estiramientos</span></label>`;
+        const cb=row.querySelector('input');
+        cb.addEventListener('change',()=>{
+          const st=loadState('lumbar-plan-state');
+          if(cb.checked) st[stretchKey]=true; else delete st[stretchKey];
+          saveState('lumbar-plan-state',st);
+          row.classList.toggle('done',cb.checked);
+          updateExProgress();
+        });
+        dayDiv.appendChild(row);
+      }
+
+      if(d.phase.warn){
+        const warn=document.createElement('p');
+        warn.className='warn';
+        const icon = d.phaseNum===3 ? 'ti-alert-circle' : (d.phaseNum===4||d.phaseNum===5 ? 'ti-alert-triangle' : 'ti-ban');
+        warn.innerHTML=`<i class="ti ${icon}"></i>${d.phase.warn}`;
+        dayDiv.appendChild(warn);
+      }
+
+      body.appendChild(dayDiv);
+    });
+
+    weekDiv.appendChild(body);
+    weeksEl.appendChild(weekDiv);
+  });
+
+  updateExProgress();
+}
+
+function updateExProgress(){
+  let total=0, done=0;
+  document.querySelectorAll('#weeks .ex input').forEach(cb=>{
+    total++; if(cb.checked) done++;
+  });
+  document.getElementById('progress-text').textContent=`${done} / ${total}`;
+}
+
+document.getElementById('reset-btn').addEventListener('click',()=>{
+  if(confirm('¿Borrar todas las marcas de progreso de ejercicio?')){
+    localStorage.removeItem('lumbar-plan-state');
+    renderExercise();
+  }
+});
+
+/* ---------- DIETA ---------- */
+const DIET_DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+function renderDiet(){
+  const el=document.getElementById('diet-week');
+  const state=loadState('diet-state');
+  let html = '<div class="card"><p><strong>Marca los días que has seguido el menú</strong></p>';
+  DIET_DAYS.forEach((d,i)=>{
+    const key=`dia_${i}`;
+    const checked = state[key] ? 'checked' : '';
+    html += `<div class="meal-check"><input type="checkbox" id="diet_${i}" data-key="${key}" ${checked}><label for="diet_${i}">${d}</label></div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+  el.querySelectorAll('input').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      const st=loadState('diet-state');
+      if(cb.checked) st[cb.dataset.key]=true; else delete st[cb.dataset.key];
+      saveState('diet-state', st);
+    });
+  });
+}
+
+/* ---------- ESTIRAMIENTOS ---------- */
+const STRETCHES = [
+  ["Rodillas al pecho", "Tumbado boca arriba, lleva ambas rodillas al pecho y abraza suavemente. Descarga toda la zona lumbar. 30-40 segundos, 2 veces."],
+  ["Rodilla al pecho, una pierna", "Igual que el anterior pero con una sola pierna, la otra apoyada y flexionada en el suelo. 20-30 segundos por lado."],
+  ["Estiramiento de piriforme", "Tumbado boca arriba, cruza un tobillo sobre la rodilla contraria y tira suavemente de la pierna de abajo hacia el pecho. Alivia mucho la zona entre columna y nalga. 30 segundos por lado."],
+  ["Estiramiento de isquiotibiales (tumbado)", "Tumbado, eleva una pierna estirada sujetando con una toalla o cinta detrás del muslo, rodilla contraria flexionada y pie apoyado. Sin forzar la rodilla elevada. 30 segundos por lado."],
+  ["Gato-camello", "A cuatro patas, alterna arquear la espalda hacia arriba (como un gato) y hundirla suavemente hacia abajo. Movimiento lento, sin forzar el rango. 8-10 repeticiones."],
+  ["Estiramiento de cadera (flexor)", "De rodillas, adelanta una pierna en ángulo de 90° y estira la otra hacia atrás, empuja la cadera suavemente hacia delante. 30 segundos por lado."],
+  ["Postura del niño (suave)", "De rodillas, siéntate sobre los talones y estira los brazos hacia delante, dejando caer el pecho hacia el suelo sin forzar. Si molesta, reduce el rango. 30-40 segundos."],
+  ["Rotación de rodillas tumbado", "Tumbado boca arriba, rodillas flexionadas juntas, deja caer ambas rodillas suavemente hacia un lado y luego hacia el otro, sin forzar el giro. 20 segundos por lado."]
+];
+
+function renderStretches(){
+  const el=document.getElementById('stretch-list');
+  const state=loadState('stretch-state');
+  let html='';
+  STRETCHES.forEach((s,i)=>{
+    const [name,detail]=s;
+    const key=`st_${i}`;
+    const checked = state[key] ? 'checked' : '';
+    const doneClass = state[key] ? ' done' : '';
+    html += `<div class="ex${doneClass}"><input type="checkbox" id="stretch_${i}" data-key="${key}" ${checked}>
+      <label for="stretch_${i}"><span class="exname">${name}</span><span class="exdetail">${detail}</span></label></div>`;
+  });
+  el.innerHTML=html;
+  el.querySelectorAll('input').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      const st=loadState('stretch-state');
+      if(cb.checked) st[cb.dataset.key]=true; else delete st[cb.dataset.key];
+      saveState('stretch-state', st);
+      cb.closest('.ex').classList.toggle('done', cb.checked);
+    });
+  });
+}
+
+/* ---------- SEGUIMIENTO DIARIO ---------- */
+function todayStr(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function fmtDateStr(s){
+  const [y,m,d]=s.split('-').map(Number);
+  const meses=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  return `${d} ${meses[m-1]} ${y}`;
+}
+
+function renderHealth(){
+  document.getElementById('h-fecha').value = document.getElementById('h-fecha').value || todayStr();
+  const hist = document.getElementById('health-hist');
+  const data = loadState('health-log');
+  const dates = Object.keys(data).sort().reverse();
+  if(!dates.length){ hist.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Todavía no hay registros.</p>'; return; }
+  let html = '<div class="table-scroll"><table class="hist"><tr><th>Fecha</th><th>Peso</th><th>TA</th><th>Pulso</th><th>Sueño</th><th>Agua</th><th>Dolor</th><th>Medic.</th><th></th></tr>';
+  dates.forEach(dt=>{
+    const r=data[dt];
+    html += `<tr><td>${fmtDateStr(dt)}</td><td>${r.peso??''}</td><td>${(r.tasis||r.tadia)?(r.tasis||'')+'/'+(r.tadia||''):''}</td><td>${r.pulso??''}</td><td>${r.sueno??''}</td><td>${r.agua??''}</td><td>${r.dolor??''}</td><td>${r.medicacion?'<i class="ti ti-check"></i>':''}</td><td><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></td></tr>`;
+  });
+  html += '</table></div>';
+  hist.innerHTML = html;
+  hist.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const st=loadState('health-log'); delete st[btn.dataset.del]; saveState('health-log',st); renderHealth();
+    });
+  });
+}
+document.getElementById('h-save').addEventListener('click',()=>{
+  const fecha = document.getElementById('h-fecha').value || todayStr();
+  const st = loadState('health-log');
+  st[fecha] = {
+    peso: document.getElementById('h-peso').value || null,
+    tasis: document.getElementById('h-tasis').value || null,
+    tadia: document.getElementById('h-tadia').value || null,
+    pulso: document.getElementById('h-pulso').value || null,
+    sueno: document.getElementById('h-sueno').value || null,
+    agua: document.getElementById('h-agua').value || null,
+    dolor: document.getElementById('h-dolor').value || null,
+    medicacion: document.getElementById('h-medicacion').checked
+  };
+  saveState('health-log', st);
+  renderHealth();
+});
+
+/* ---------- CUIDADO PERSONAL ---------- */
+const CARE_ITEMS = [
+  ["dientes_manana","Cepillado de dientes (mañana)"],
+  ["dientes_noche","Cepillado de dientes (noche)"],
+  ["crema_facial","Crema facial"],
+  ["hidratante_corporal","Hidratante corporal"],
+  ["afeitado","Afeitado / cuidado de barba"],
+  ["unas","Corte o cuidado de uñas"],
+  ["proteccion_solar","Protección solar"]
+];
+function renderCareChecklist(fecha){
+  const data = loadState('care-log');
+  const entry = data[fecha] || {};
+  const el = document.getElementById('care-checklist');
+  el.innerHTML = CARE_ITEMS.map(([id,label])=>
+    `<div class="chk-row"><input type="checkbox" id="care_${id}" ${entry[id]?'checked':''}><label for="care_${id}">${label}</label></div>`
+  ).join('');
+}
+function renderCareHist(){
+  const hist = document.getElementById('care-hist');
+  const data = loadState('care-log');
+  const dates = Object.keys(data).sort().reverse();
+  if(!dates.length){ hist.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Todavía no hay registros.</p>'; return; }
+  let html = '<div class="table-scroll"><table class="hist"><tr><th>Fecha</th><th>Completado</th><th></th></tr>';
+  dates.forEach(dt=>{
+    const entry = data[dt];
+    const done = CARE_ITEMS.filter(([id])=>entry[id]).length;
+    html += `<tr><td>${fmtDateStr(dt)}</td><td>${done} / ${CARE_ITEMS.length}</td><td><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></td></tr>`;
+  });
+  html += '</table></div>';
+  hist.innerHTML = html;
+  hist.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const st=loadState('care-log'); delete st[btn.dataset.del]; saveState('care-log',st); renderCareHist();
+    });
+  });
+}
+function renderCare(){
+  const fechaInput = document.getElementById('c-fecha');
+  fechaInput.value = fechaInput.value || todayStr();
+  renderCareChecklist(fechaInput.value);
+  renderCareHist();
+}
+document.getElementById('c-fecha').addEventListener('change',()=>{
+  renderCareChecklist(document.getElementById('c-fecha').value);
+});
+document.getElementById('c-save').addEventListener('click',()=>{
+  const fecha = document.getElementById('c-fecha').value || todayStr();
+  const st = loadState('care-log');
+  const entry = {};
+  CARE_ITEMS.forEach(([id])=>{ entry[id] = document.getElementById(`care_${id}`).checked; });
+  st[fecha] = entry;
+  saveState('care-log', st);
+  renderCareHist();
+});
+
+/* ---------- NOTAS ---------- */
+function renderNotesHist(){
+  const hist = document.getElementById('notes-hist');
+  const data = loadState('notes-log');
+  const dates = Object.keys(data).sort().reverse();
+  if(!dates.length){ hist.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Todavía no hay notas.</p>'; return; }
+  hist.innerHTML = dates.map(dt=>
+    `<div class="note-entry"><div class="note-date"><span>${fmtDateStr(dt)}</span><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></div><div class="note-text">${(data[dt]||'').replace(/</g,'&lt;')}</div></div>`
+  ).join('');
+  hist.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const st=loadState('notes-log'); delete st[btn.dataset.del]; saveState('notes-log',st); renderNotesHist();
+    });
+  });
+}
+function renderNotes(){
+  document.getElementById('n-fecha').value = document.getElementById('n-fecha').value || todayStr();
+  renderNotesHist();
+}
+document.getElementById('n-save').addEventListener('click',()=>{
+  const fecha = document.getElementById('n-fecha').value || todayStr();
+  const texto = document.getElementById('n-texto').value.trim();
+  if(!texto) return;
+  const st = loadState('notes-log');
+  st[fecha] = texto;
+  saveState('notes-log', st);
+  document.getElementById('n-texto').value='';
+  renderNotesHist();
+});
+
+/* ---------- SINCRONIZAR ENTRE DISPOSITIVOS ---------- */
+const DATA_KEYS = ['lumbar-plan-state','diet-state','stretch-state','health-log','care-log','notes-log'];
+
+// Funciones de exportación locales eliminadas en favor de Dropbox
+
+/* ---------- TABS ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+renderExercise();
+renderDiet();
+renderStretches();
+renderHealth();
+renderCare();
+renderNotes();
+
+/* ---------- DROPBOX SYNC ---------- */
+const CLIENT_ID = 'tn0qzpzapx2b1mw';
+let dbx = null;
+
+document.getElementById('dbx-login-btn').addEventListener('click', () => {
+  const dbxAuth = new Dropbox.DropboxAuth({ clientId: CLIENT_ID });
+  let redirectUri = window.location.href.split('#')[0].split('?')[0];
+  const authUrl = dbxAuth.getAuthenticationUrl(redirectUri, undefined, 'token');
+  authUrl.then(url => { window.location.href = url; });
+});
+
+if (window.location.hash.includes('access_token')) {
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  const token = params.get('access_token');
+  if(token){
+    dbx = new Dropbox.Dropbox({ accessToken: token });
+    document.getElementById('dbx-login-btn').style.display = 'none';
+    document.getElementById('dbx-load-btn').style.display = 'inline-block';
+    document.getElementById('dbx-save-btn').style.display = 'inline-block';
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+  }
+}
+
+document.getElementById('dbx-save-btn').addEventListener('click', () => {
+  if(!dbx) return;
+  const bundle = {};
+  DATA_KEYS.forEach(k => { bundle[k] = loadState(k); });
+  bundle._exportado = new Date().toISOString();
+  const file = new Blob([JSON.stringify(bundle)], { type: 'application/json' });
+  dbx.filesUpload({ path: '/plan_lumbar_datos.json', contents: file, mode: 'overwrite' })
+    .then(() => alert('Datos guardados en Dropbox correctamente.'))
+    .catch(err => { console.error(err); alert('Error al guardar en Dropbox.'); });
+});
+
+document.getElementById('dbx-load-btn').addEventListener('click', () => {
+  if(!dbx) return;
+  dbx.filesDownload({ path: '/plan_lumbar_datos.json' })
+    .then(response => {
+      const reader = new FileReader();
+      reader.onload = function() {
+        try {
+          const bundle = JSON.parse(reader.result);
+          const merge = confirm('Aceptar = fusionar con los datos locales.\\nCancelar = reemplazar todo por lo de Dropbox.');
+          DATA_KEYS.forEach(k => {
+            if(!(k in bundle)) return;
+            if(merge) saveState(k, Object.assign({}, loadState(k), bundle[k]));
+            else saveState(k, bundle[k]);
+          });
+          renderExercise(); renderDiet(); renderStretches(); renderHealth(); renderCare(); renderNotes();
+          alert('Datos cargados de Dropbox correctamente.');
+        } catch(e) { alert('Error al procesar el archivo de Dropbox.'); }
+      };
+      reader.readAsText(response.result.fileBlob);
+    })
+    .catch(err => {
+      console.error(err);
+      if(err.status === 409) alert('El archivo no existe en Dropbox aún. Guarda primero.');
+      else alert('Error al cargar de Dropbox.');
+    });
+});
+/* ---------- PWA INSTALL ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('SW registrado', reg.scope);
+    }).catch(err => console.log('SW registro falló', err));
+  });
+}
+let deferredPrompt;
+const installBtn = document.getElementById('pwa-install-btn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'inline-block';
+});
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') installBtn.style.display = 'none';
+    deferredPrompt = null;
+  }
+});
+</script>
+</body>
+</html>
