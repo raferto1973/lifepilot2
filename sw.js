@@ -1,6 +1,8 @@
-const CACHE_NAME = 'lifepilot-v3';
+const CACHE_NAME = 'lifepilot-v4';
 const urlsToCache = [
   './index.html',
+  './style.css',
+  './app.js',
   './icon_64x64.png',
   './icon_256x256.png',
   './manifest.json',
