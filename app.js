@@ -38,7 +38,9 @@ function renderSettingsUI() {
       <div style="display:flex; flex-direction:column; gap:6px;">
         <input type="text" class="diet-b" value="${d.breakfast}" placeholder="Desayuno">
         <input type="text" class="diet-l" value="${d.lunch}" placeholder="Comida">
+        <input type="text" class="diet-l-with" value="${d.lunchWith || ''}" placeholder="Con quién se comparte la comida">
         <input type="text" class="diet-d" value="${d.dinner}" placeholder="Cena">
+        <input type="text" class="diet-d-with" value="${d.dinnerWith || ''}" placeholder="Con quién se comparte la cena">
       </div>
     </div>
   `).join('');
@@ -93,16 +95,19 @@ function addCareRow() {
 function saveSettings() {
   // Diet
   const newDiet = [];
-  document.querySelectorAll('#settings-diet-list .settings-row').forEach(row => {
+  document.querySelectorAll('#settings-diet-list .settings-section').forEach(row => {
     newDiet.push({
       day: row.querySelector('strong').innerText,
       breakfast: row.querySelector('.diet-b').value,
       lunch: row.querySelector('.diet-l').value,
-      dinner: row.querySelector('.diet-d').value
+      lunchWith: row.querySelector('.diet-l-with').value,
+      dinner: row.querySelector('.diet-d').value,
+      dinnerWith: row.querySelector('.diet-d-with').value
     });
   });
   DIET_MENU = newDiet;
   saveState('cfg-diet', DIET_MENU);
+  localStorage.setItem('cfg-diet-version', DIET_PLAN_VERSION);
 
   // Stretches
   const newStretches = [];
@@ -368,28 +373,41 @@ document.getElementById('reset-btn').addEventListener('click',()=>{
 
 /* ---------- DIETA ---------- */
 const DEFAULT_DIET_MENU = [
-  { day: "Lunes", breakfast: "Tostada integral, tomate y AOVE + café", lunch: "Lentejas con verdura + fruta", dinner: "Pescado blanco al horno + verdura salteada" },
-  { day: "Martes", breakfast: "Yogur natural con avena y fruta", lunch: "Pollo a la plancha, ensalada variada + pan integral", dinner: "Crema de verduras + tortilla francesa" },
-  { day: "Miércoles", breakfast: "Tostada integral, tomate y AOVE + café", lunch: "Garbanzos con verdura + fruta", dinner: "Pavo a la plancha + ensalada" },
-  { day: "Jueves", breakfast: "Huevo revuelto + fruta", lunch: "Pasta integral con verduras y atún", dinner: "Sopa de verduras + queso fresco" },
-  { day: "Viernes", breakfast: "Yogur natural con avena y fruta", lunch: "Merluza o similar a la plancha + arroz integral", dinner: "Ensalada con huevo duro y aguacate" },
-  { day: "Sábado", breakfast: "Tostada integral, tomate y AOVE + café", lunch: "Comida libre moderada (puedes incluir alcohol ocasional aquí)", dinner: "Verdura salteada + pescado o pollo" },
-  { day: "Domingo", breakfast: "Huevo revuelto + fruta", lunch: "Arroz o legumbre con verdura", dinner: "Crema de verduras ligera" }
+  { day: "Día 1 · Lunes", breakfast: "Yogur natural, avena, manzana y canela", lunch: "Lentejas guisadas con verduras, huevo cocido y fruta", lunchWith: "Con tu hijo · 2 personas", dinner: "Merluza al horno con patata y judías verdes", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 2 · Martes", breakfast: "Tostada integral con tomate, AOVE y queso fresco", lunch: "Fajitas de pollo, pimientos y cebolla con tortillas integrales", lunchWith: "Con tu hijo · 2 personas", dinner: "Crema de calabacín y tortilla de espinacas", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 3 · Miércoles", breakfast: "Porridge de avena con plátano y nueces sin sal", lunch: "Pasta integral con atún, tomate natural, espinacas y ensalada", lunchWith: "Con tu hijo · 2 personas", dinner: "Salmón al horno con brócoli y quinoa", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 4 · Jueves", breakfast: "Huevos revueltos, tostada integral y una naranja", lunch: "Garbanzos con espinacas, bacalao y fruta", lunchWith: "Con tu hijo · 2 personas", dinner: "Albóndigas de pavo en tomate casero con verduras asadas", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 5 · Viernes", breakfast: "Yogur natural con pera, semillas y copos de avena", lunch: "Arroz integral salteado con pollo y verduras", lunchWith: "Con tu hijo · 2 personas", dinner: "Pizza casera integral de verduras y mozzarella con ensalada", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 6 · Sábado", breakfast: "Tostada integral con aguacate, huevo y tomate", lunch: "Dorada al horno con patata, cebolla y ensalada", lunchWith: "Con tu pareja · 2 personas", dinner: "Crema de calabaza con salteado de setas y huevo", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 7 · Domingo", breakfast: "Yogur natural con frutos rojos y almendras sin sal", lunch: "Arroz con verduras y marisco, acompañado de ensalada", lunchWith: "Con tu pareja · 2 personas", dinner: "Ensalada templada de garbanzos, pimiento, calabacín y queso fresco", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 8 · Lunes", breakfast: "Tostada integral con crema de cacahuete sin azúcar y plátano", lunch: "Alubias blancas con verduras y arroz integral", lunchWith: "Con tu hijo · 2 personas", dinner: "Bacalao con pisto casero y patata cocida", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 9 · Martes", breakfast: "Yogur natural, muesli sin azúcar y kiwi", lunch: "Cuscús integral con pavo, calabacín, zanahoria y garbanzos", lunchWith: "Con tu hijo · 2 personas", dinner: "Pimientos rellenos de atún, huevo y verduras", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 10 · Miércoles", breakfast: "Tortilla francesa, pan integral y fruta de temporada", lunch: "Ternera magra guisada con patata, zanahoria y guisantes", lunchWith: "Con tu hijo · 2 personas", dinner: "Pollo a la plancha con ensalada completa de aguacate y maíz", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 11 · Jueves", breakfast: "Avena nocturna con yogur, melocotón y canela", lunch: "Bol de salmón, arroz, pepino, zanahoria y edamame", lunchWith: "Con tu hijo · 2 personas", dinner: "Sopa de verduras y tortilla de calabacín", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 12 · Viernes", breakfast: "Tostada integral con hummus, tomate y fruta", lunch: "Espaguetis integrales con boloñesa de lentejas y carne magra", lunchWith: "Con tu hijo · 2 personas", dinner: "Hamburguesa casera de pavo con verduras asadas y pan integral opcional", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 13 · Sábado", breakfast: "Yogur natural con plátano, cacao puro y avellanas", lunch: "Pollo asado con boniato y ensalada de col casera", lunchWith: "Con tu pareja · 2 personas", dinner: "Tacos de pescado con col, tomate y salsa de yogur", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 14 · Domingo", breakfast: "Pan integral con ricota, pera y canela", lunch: "Lasaña de verduras y carne magra con ensalada", lunchWith: "Con tu pareja · 2 personas", dinner: "Crema de lentejas rojas con verduras y yogur natural", dinnerWith: "Con tu pareja · 2 personas" },
+  { day: "Día 15 · Lunes", breakfast: "Yogur natural con avena, piña y semillas", lunch: "Curry suave de garbanzos y verduras con arroz basmati", lunchWith: "Con tu hijo · 2 personas", dinner: "Merluza en papillote con verduras y patata pequeña", dinnerWith: "Con tu pareja · 2 personas" }
 ];
+const DIET_PLAN_VERSION = 'family-15-v1';
 let DIET_MENU = loadState('cfg-diet');
-if(!Array.isArray(DIET_MENU) || DIET_MENU.length === 0) DIET_MENU = DEFAULT_DIET_MENU;
+if(localStorage.getItem('cfg-diet-version') !== DIET_PLAN_VERSION || !Array.isArray(DIET_MENU) || DIET_MENU.length !== 15) {
+  DIET_MENU = DEFAULT_DIET_MENU;
+  saveState('cfg-diet', DIET_MENU);
+  localStorage.setItem('cfg-diet-version', DIET_PLAN_VERSION);
+}
 
 function renderDiet(){
   const tbody = document.getElementById('diet-menu-body');
   if(tbody) {
-    tbody.innerHTML = DIET_MENU.map(d => `<tr><td>${d.day}</td><td>${d.breakfast}</td><td>${d.lunch}</td><td>${d.dinner}</td></tr>`).join('');
+    tbody.innerHTML = DIET_MENU.map(d => `<tr><td>${d.day}</td><td>${d.breakfast}</td><td>${d.lunch}<span class="meal-for">${d.lunchWith || ''}</span></td><td>${d.dinner}<span class="meal-for">${d.dinnerWith || ''}</span></td></tr>`).join('');
   }
 
   const el=document.getElementById('diet-week');
   const state=loadState('diet-state');
   let html = '<div class="card"><p><strong>Marca los días que has seguido el menú</strong></p>';
   DIET_MENU.forEach((d,i)=>{
-    const key=`dia_${i}`;
+    const key=`family15_dia_${i}`;
     const checked = state[key] ? 'checked' : '';
     html += `<div class="meal-check"><input type="checkbox" id="diet_${i}" data-key="${key}" ${checked}><label for="diet_${i}">${d.day}</label></div>`;
   });
@@ -456,12 +474,13 @@ function renderHealth(){
   const data = loadState('health-log');
   const dates = Object.keys(data).sort().reverse();
   if(!dates.length){ hist.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Todavía no hay registros.</p>'; return; }
-  let html = '<div class="table-scroll"><table class="hist"><tr><th>Fecha</th><th>Peso</th><th>TA</th><th>Pulso</th><th>Sueño</th><th>Agua</th><th>Dolor</th><th>Parestesia</th><th>24 h</th><th>Alertas</th><th>Medic.</th><th></th></tr>';
+  let html = '<div class="table-scroll"><table class="hist"><tr><th>Fecha</th><th>Peso</th><th>TA</th><th>Pulso</th><th>Sueño</th><th>Agua</th><th>Dolor</th><th>Parestesia</th><th>24 h</th><th>Alertas</th><th>Dieta</th><th>Medic.</th><th></th></tr>';
   dates.forEach(dt=>{
     const r=data[dt];
     const alerts = [r.adormecimiento?'Adormecimiento':'', r.debilidad?'Debilidad':''].filter(Boolean).join(' · ');
     const traffic = r.semaforo ? `<span class="status-dot ${r.semaforo}">${r.semaforo}</span>` : '';
-    html += `<tr><td>${fmtDateStr(dt)}</td><td>${r.peso??''}</td><td>${(r.tasis||r.tadia)?(r.tasis||'')+'/'+(r.tadia||''):''}</td><td>${r.pulso??''}</td><td>${r.sueno??''}</td><td>${r.agua??''}</td><td>${r.dolor??''}</td><td>${r.parestesia??''}</td><td>${traffic}</td><td class="alert-cell">${alerts}</td><td>${r.medicacion?'<i class="ti ti-check"></i>':''}</td><td><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></td></tr>`;
+    const dietMark = r.dieta === true ? '<i class="ti ti-check"></i>' : (r.dieta === false ? '<i class="ti ti-minus"></i>' : '');
+    html += `<tr><td>${fmtDateStr(dt)}</td><td>${r.peso??''}</td><td>${(r.tasis||r.tadia)?(r.tasis||'')+'/'+(r.tadia||''):''}</td><td>${r.pulso??''}</td><td>${r.sueno??''}</td><td>${r.agua??''}</td><td>${r.dolor??''}</td><td>${r.parestesia??''}</td><td>${traffic}</td><td class="alert-cell">${alerts}</td><td>${dietMark}</td><td>${r.medicacion?'<i class="ti ti-check"></i>':''}</td><td><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></td></tr>`;
   });
   html += '</table></div>';
   hist.innerHTML = html;
@@ -486,6 +505,7 @@ document.getElementById('h-save').addEventListener('click',()=>{
     semaforo: document.getElementById('h-semaforo').value,
     adormecimiento: document.getElementById('h-adormecimiento').checked,
     debilidad: document.getElementById('h-debilidad').checked,
+    dieta: document.getElementById('h-dieta').checked,
     medicacion: document.getElementById('h-medicacion').checked
   };
   if(entry.parestesia === '3' || entry.adormecimiento || entry.debilidad) entry.semaforo = 'rojo';
@@ -681,6 +701,22 @@ function renderEstadisticas() {
       ]
     },
     options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  const dietEntries = recentDates.map(d => healthData[d]).filter(entry => typeof entry.dieta === 'boolean');
+  const dietDone = dietEntries.filter(entry => entry.dieta).length;
+  const dietMissed = dietEntries.length - dietDone;
+  const dietPct = dietEntries.length ? Math.round((dietDone / dietEntries.length) * 100) : 0;
+  initOrUpdateChart('chart-dieta-cumplimiento', {
+    type: 'doughnut',
+    data: {
+      labels: ['Seguido', 'No seguido'],
+      datasets: [{ data: [dietDone, dietMissed], backgroundColor: ['#0f6e56', '#e0e0e0'] }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: dietPct + '% de adherencia' } }
+    }
   });
 
   // Calculate Exercise Compliance

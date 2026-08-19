@@ -43,13 +43,23 @@ La guía NICE NG59 no recomienda TENS para dolor lumbar con o sin ciática. La a
 
 Fuentes: [manual oficial TESMED MAX 7.8](https://cdn.shopify.com/s/files/1/0513/3680/6597/files/MANUALE_MAX_7.8_-_08_2021.pdf?v=1638375283), [ficha oficial del equipo](https://tesmed.com/products/tesmed-7-8-power) y [NICE NG59](https://www.nice.org.uk/guidance/ng59/chapter/Recommendations).
 
+## Menú familiar de 15 días
+
+La alimentación usa un ciclo de 15 días con una sola receta compartida y raciones diferentes. De lunes a viernes la comida es para el usuario y su hijo deportista de 21 años, y la cena para el usuario y su pareja de 50 años. Los fines de semana, comida y cena son para la pareja.
+
+- El déficit energético se aplica sólo al usuario.
+- El hijo mantiene una ración completa de proteína y más hidratos según entrenamiento y hambre.
+- La pareja utiliza una ración de mantenimiento, sin copiar la reducción del usuario.
+- Cada comida muestra con quién se comparte y el editor permite modificar tanto el plato como ese contexto.
+- El ciclo prioriza alimentos frescos, verduras, legumbres, cereales integrales, pescado, huevos y carnes magras, con control de sodio por la hipertensión.
+
 ## Funciones
 
 - Checklist diario de ejercicio, movilidad, estiramientos y revisión S1 a 24 horas.
-- Registro de peso, tensión arterial, pulso, sueño, agua, dolor y medicación.
+- Registro de peso, tensión arterial, pulso, sueño, agua, dolor, medicación y cumplimiento diario del menú/dieta.
 - Seguimiento de parestesia S1, adormecimiento, debilidad y semáforo diario.
-- Gráficas de peso, dolor, parestesia, tensión, sueño, agua y cumplimiento.
-- Menú semanal y checklist de alimentación.
+- Gráficas de peso, dolor, parestesia, tensión, sueño, agua, adherencia a la dieta y cumplimiento.
+- Menú familiar de 15 días, raciones adaptadas y checklist de alimentación.
 - Cuidado personal y diario de notas.
 - Configuración de dieta, movilidad y cuidados.
 - Sincronización del progreso mediante Dropbox.

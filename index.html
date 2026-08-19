@@ -104,31 +104,38 @@
   </div>
 
   <div id="tab-dieta" class="tabpanel">
-    <div class="card">
-      <p><strong>Objetivo:</strong> de 85,2 kg a 72 kg (171 cm, 53 años) de forma progresiva hasta el 31 de diciembre &mdash; un ritmo de aproximadamente 0,5-0,6 kg/semana, considerado saludable.</p>
-      <p><strong>Estimación orientativa:</strong> unas 1.800-2.000 kcal/día suelen generar ese ritmo de pérdida combinado con el ejercicio del plan. Es una referencia general, no una prescripción — coméntalo con tu médico o un dietista, sobre todo porque estás medicado para la hipertensión.</p>
+    <div class="card diet-intro">
+      <p><strong>Un solo menú familiar, tres raciones distintas.</strong> El objetivo de perder peso es exclusivamente tuyo. Tu hijo de 21 años, deportista, y tu pareja de 50 años pueden compartir los mismos platos sin seguir tu déficit energético.</p>
+      <p>De lunes a viernes la comida está planteada para ti y tu hijo, y la cena para ti y tu pareja. Los fines de semana, comida y cena son para ti y tu pareja. No se asignan calorías cerradas a ellos porque sus necesidades dependen de tamaño corporal, actividad y entrenamiento.</p>
+    </div>
+
+    <div class="portion-grid">
+      <div class="portion-card yours"><strong>Tu ración · pérdida gradual</strong><span>½ plato de verduras, ¼ de proteína y ¼ de arroz, pasta, patata, pan o legumbre. Mide el aceite, evita repetir y ajusta según peso, hambre y evolución.</span></div>
+      <div class="portion-card son"><strong>Hijo · mantenimiento y deporte</strong><span>Misma base con una ración completa de proteína y aproximadamente 1½–2 veces tu ración de arroz, pasta, patata o pan. Puede añadir fruta o yogur según entrenamiento y hambre.</span></div>
+      <div class="portion-card partner"><strong>Pareja · mantenimiento</strong><span>Misma base con una ración normal de hidrato y proteína, ajustada a su hambre y actividad. No necesita reducirla para igualar tu plato.</span></div>
     </div>
 
     <div class="card">
       <p><strong>Principios generales</strong></p>
       <ul>
-        <li>Reduce la sal añadida: cocina con especias, ajo, limón o hierbas en vez de sal, y evita procesados/embutidos y precocinados, que suelen llevar mucho sodio — importante con tu medicación para la tensión.</li>
-        <li>Verdura en comida y cena, fruta 2-3 veces al día.</li>
-        <li>Prioriza agua e infusiones. Alcohol ocasional (1-2 veces por semana, cantidad moderada) y Coca-Cola de vez en cuando está bien como excepción, no como costumbre diaria.</li>
-        <li>5 tomas moderadas al día (desayuno, comida, cena y 1-2 snacks) ayuda a no llegar con mucha hambre a las comidas principales.</li>
-        <li>Cocina sencilla: plancha, horno, salteado, cocido — sin necesidad de recetas complicadas.</li>
+        <li>Cocina la misma receta y reparte primero las raciones; los extras del deportista se sirven aparte.</li>
+        <li>Incluye verdura en comida y cena, fruta diaria, legumbres, cereales integrales, pescado, huevos y carnes magras.</li>
+        <li>Para la hipertensión, limita sal, cubitos, salsas comerciales, embutidos y precocinados. Usa ajo, limón, especias y hierbas; no emplees sustitutos de sal con potasio sin consultarlo si tomas medicación o tienes enfermedad renal.</li>
+        <li>Prioriza agua. Refrescos y alcohol quedan como excepciones, no como parte necesaria del menú.</li>
+        <li>Si cualquiera tiene alergias, intolerancias, enfermedad renal, diabetes u otra dieta médica, el ciclo necesita adaptación profesional.</li>
       </ul>
+      <p class="source-links"><a href="https://www.who.int/news-room/fact-sheets/detail/healthy-diet" target="_blank" rel="noopener">OMS · dieta saludable</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/sodium-reduction" target="_blank" rel="noopener">OMS · sodio</a> · <a href="https://www.nhs.uk/better-health/lose-weight/healthy-eating-when-trying-to-lose-weight/" target="_blank" rel="noopener">NHS · control de raciones</a></p>
     </div>
 
     <div class="card">
-      <p><strong>Menú semanal orientativo</strong> (se repite cada semana, puedes rotar los días entre sí)</p>
+      <p><strong>Menú orientativo de 15 días</strong> (al terminar el día 15 puedes reiniciar el ciclo o intercambiar platos equivalentes)</p>
       <div class="table-scroll">
       <table class="menu">
-        <thead><tr><th>Día</th><th>Desayuno</th><th>Comida</th><th>Cena</th></tr></thead>
+        <thead><tr><th>Día</th><th>Desayuno · tú</th><th>Comida compartida</th><th>Cena compartida</th></tr></thead>
         <tbody id="diet-menu-body"></tbody>
       </table>
       </div>
-      <p style="margin-top:10px"><strong>Snacks entre horas:</strong> fruta, un puñado de frutos secos naturales sin sal, o un yogur natural.</p>
+      <p style="margin-top:10px"><strong>Entre horas:</strong> para ti, fruta, yogur natural o una porción pequeña de frutos secos sin sal si hay hambre real. Tu hijo puede necesitar un complemento mayor alrededor del entrenamiento; tu pareja puede tomarlo según hambre, sin obligación.</p>
     </div>
 
     <div id="diet-week" style="margin-top:1.5rem"></div>
@@ -177,6 +184,7 @@
         <div class="field"><label for="h-semaforo">Respuesta en 24 h</label><select id="h-semaforo"><option value="verde">Verde · igual o mejor</option><option value="amarillo">Amarillo · reducir carga</option><option value="rojo">Rojo · parar y consultar</option></select></div>
       </div>
       <div class="chk-row"><input type="checkbox" id="h-medicacion"><label for="h-medicacion">Medicación de la tensión tomada hoy</label></div>
+      <div class="chk-row"><input type="checkbox" id="h-dieta"><label for="h-dieta">He seguido el menú/dieta previsto hoy</label></div>
       <div class="chk-row danger-check"><input type="checkbox" id="h-adormecimiento"><label for="h-adormecimiento">Adormecimiento permanente hoy</label></div>
       <div class="chk-row danger-check"><input type="checkbox" id="h-debilidad"><label for="h-debilidad">Debilidad nueva en pantorrilla o pie</label></div>
       <button class="save-btn" id="h-save" style="margin-top:10px">Guardar registro</button>
@@ -248,6 +256,12 @@
       </div>
     </div>
     <div class="charts-grid">
+      <div class="card">
+        <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Menú / dieta</strong></p>
+        <div style="position: relative; height:180px; width:100%">
+          <canvas id="chart-dieta-cumplimiento"></canvas>
+        </div>
+      </div>
       <div class="card">
         <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Cuidado Personal</strong></p>
         <div style="position: relative; height:180px; width:100%">

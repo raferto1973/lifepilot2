@@ -62,6 +62,14 @@
   table.menu{width:100%;border-collapse:collapse;font-size:13px;margin-top:.5rem}
   table.menu th, table.menu td{border-bottom:0.5px solid var(--border);text-align:left;padding:8px 6px;vertical-align:top}
   table.menu th{color:var(--text-secondary);font-weight:600;font-size:12px}
+  table.menu{min-width:780px}
+  .meal-for{display:block;margin-top:5px;color:var(--border-accent);font-size:11px;font-weight:600}
+  .diet-intro{border-left:4px solid var(--border-accent)}
+  .portion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+  .portion-card{background:var(--surface-1);border:1px solid var(--border);border-top-width:4px;border-radius:10px;padding:11px 12px;font-size:12px}
+  .portion-card strong,.portion-card span{display:block}
+  .portion-card span{color:var(--text-secondary);line-height:1.45;margin-top:4px}
+  .portion-card.yours{border-top-color:#0f6e56}.portion-card.son{border-top-color:#3b82c4}.portion-card.partner{border-top-color:#a56c2f}
   .meal-check{display:flex;align-items:center;gap:6px;font-size:12.5px;margin-top:4px}
   .badge{display:inline-block;font-size:11px;padding:1px 8px;border-radius:9px;background:var(--surface-0);color:var(--text-secondary);margin-left:6px}
   .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px}
@@ -130,6 +138,7 @@
     table.menu{font-size:12px}
     table.menu th, table.menu td{padding:6px 4px}
     .traffic-grid{grid-template-columns:1fr}
+    .portion-grid{grid-template-columns:1fr}
   }
   @media (max-width:380px){
     .form-grid{grid-template-columns:1fr}
