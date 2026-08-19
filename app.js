@@ -135,75 +135,69 @@ function saveSettings() {
 
 /* ---------- EJERCICIO ---------- */
 const EXERCISES = {
-  caminar_suave: ["Caminar suave", "10-20 min en llano, ritmo cómodo. Espalda erguida, pasos cortos y regulares. Si notas molestia, baja el ritmo pero no pares del todo."],
-  caminar_moderado: ["Caminar moderado", "25-35 min, puedes incluir alguna cuesta suave. Respiración relajada; si aparece dolor agudo, vuelve a terreno llano."],
-  caminar_normal: ["Caminar a ritmo normal", "30-40 min al ritmo que llevabas antes de la lesión, prestando atención a cómo responde la zona lumbar."],
-  caminar_rapido: ["Caminar rápido / a paso ligero", "30-40 min a un ritmo que te suba algo la pulsación pero te permita hablar sin ahogarte."],
-  piscina_caminar: ["Piscina: caminar en el agua", "15-20 min caminando en agua a la altura del pecho, avanzando despacio con los brazos relajados."],
-  piscina_nado_suave: ["Piscina: nado suave", "15-20 min de espalda o crol relajado. Evita braza con latigazo fuerte de piernas."],
-  piscina_aquagym: ["Piscina: aquagym o sesión larga", "20-30 min combinando nado suave con ejercicios de piernas y core en el agua."],
-  plancha_rodillas: ["Plancha de rodillas", "Apóyate en antebrazos y rodillas, zona lumbar neutra, abdomen ligeramente activado. 3-4 series de 10-15 segundos."],
-  puente_gluteo: ["Puente de glúteo", "Tumbado boca arriba, rodillas flexionadas, eleva la cadera apretando glúteos 10 segundos y baja despacio. 8 repeticiones."],
-  puente_una_pierna: ["Puente a una pierna", "Igual que el puente de glúteo pero con una pierna estirada en el aire. 6-8 repeticiones por lado."],
-  estiramiento_cadera: ["Estiramiento de cadera", "De rodillas, adelanta una pierna en 90°, estira la otra hacia atrás e inclina el peso hacia delante. 30 segundos por lado."],
-  estiramiento_piriforme: ["Estiramiento de piriforme", "Tumbado boca arriba, cruza un tobillo sobre la rodilla contraria y tira de la pierna de abajo hacia el pecho. 30 segundos por lado."],
-  estiramiento_isquios: ["Estiramiento de isquiotibiales", "Tumbado, eleva una pierna estirada sujetando con una toalla detrás del muslo, sin forzar la rodilla. 30 segundos por lado."],
-  estiramientos_generales: ["Estiramientos generales", "Rutina corta de 5-8 minutos: cuello, hombros, espalda, isquios y gemelos, cada uno 20-30 segundos."],
-  gato_camello: ["Gato-camello", "A cuatro patas, alterna arquear la espalda hacia arriba y hundirla suavemente hacia abajo, movimiento lento. 10 repeticiones."],
-  bird_dog: ["Bird-dog", "A cuatro patas, extiende brazo y pierna contraria a la vez, zona lumbar estable sin rotar la cadera. Mantén 10 segundos, 8 repeticiones por lado."],
-  sentadilla_silla: ["Sentadilla a silla", "De pie frente a una silla, baja controladamente sin llegar a tocar, y vuelve a subir. 10-12 repeticiones."],
-  plancha_lateral_corta: ["Plancha lateral corta", "Apoyado de lado sobre el antebrazo, eleva la cadera manteniendo el cuerpo en línea recta. 10-15 segundos por lado."],
-  foam_roller: ["Foam roller en glúteo/cadera", "Pasa el rodillo de espuma por glúteo y zona lateral de la cadera, despacio, sin llegar a dolor agudo. 1-2 min por lado."],
-  bici_suave: ["Bici suave", "15-20 min en bici estática o llano, resistencia baja, sillín a la altura correcta."],
-  fuerza_funcional: ["Rutina de fuerza funcional", "Sentadilla a silla, puente de glúteo, plancha y remo con banda o botellas de agua, 2-3 series de 10-12 repeticiones cada uno."],
-  moto_corta: ["Moto: sesión corta", "Solo si tu fisio o médico te ha dado el ok. Trayecto corto en llano, evitando baches. Para de inmediato si notas molestia."]
+  caminar_20: ["Caminar en llano", "20–30 min a ritmo cómodo; se puede dividir en dos paseos. Aumenta 5 min cada 2–3 sesiones sólo si el pie está igual al día siguiente."],
+  caminar_40: ["Caminar 30–40 min", "Ritmo cómodo y continuo. Sin perseguir pasos ni cuestas; detente si el síntoma se extiende hacia el pie."],
+  caminar_60: ["Caminar 45–60 min", "Prueba funcional para el viaje. Otra opción es 30–40 min por la mañana y por la tarde."],
+  brace: ["Brace abdominal", "5 repeticiones de 8–10 s, respirando con normalidad y sin aplastar ni arquear la zona lumbar."],
+  puente_corto: ["Puente corto", "2×8–10. Eleva sólo hasta mantener la espalda neutra; baja despacio."],
+  bird_dog_corto: ["Bird-dog corto", "2×5 por lado. Extiende sin elevar mucho la pierna y mantén pelvis y zona lumbar inmóviles."],
+  sentarse_levantarse: ["Sentarse y levantarse", "2×8–10 desde una silla estable, con control y espalda neutra."],
+  clamshell: ["Clamshell", "2×10 por lado. Pies juntos y pelvis quieta; abre la rodilla sin girarte hacia atrás."],
+  talones_bilateral: ["Elevación bilateral de talones", "2×8 con apoyo en la pared. Para si aparece debilidad, dolor irradiado o aumenta claramente el hormigueo."],
+  dead_bug_apoyado: ["Dead bug con apoyo", "2×5 por lado, dejando un pie apoyado. No permitas que se arquee la espalda."],
+  plancha_lateral_rodillas: ["Plancha lateral desde rodillas", "3×10–15 s por lado, cuerpo alineado y respiración normal."],
+  sentadilla: ["Sentadilla", "3×10–12, primero sin peso. Mantén la espalda neutra y el control durante todo el recorrido."],
+  zancada_corta: ["Zancada estática corta", "2×6–8 por lado, recorrido cómodo y tronco estable."],
+  hip_thrust: ["Puente / hip thrust", "3×10–12, sin hiperextender la zona lumbar al final."],
+  bird_dog_completo: ["Bird-dog controlado", "3×8 por lado, 3–5 s por repetición y pelvis inmóvil."],
+  dead_bug: ["Dead bug", "3×6–8 por lado. Reduce la palanca o vuelve a apoyar un pie si la zona lumbar pierde el control."],
+  plancha_frontal: ["Plancha frontal", "3×15–20 s con buena técnica; no hace falta prolongarla más."],
+  piscina_suave: ["Piscina suave", "15–25 min de crol o espalda, usando el estilo que mantenga el pie estable. Sin braza, virajes agresivos, saltos ni series rápidas."],
+  piscina_progresiva: ["Piscina progresiva", "25–45 min suaves. Puedes probar 50–100 m de braza sólo si llevas semanas estable y no empeoras ese día ni el siguiente."],
+  bici_15: ["Bicicleta estática", "10–15 min, resistencia baja y postura erguida. Sólo si caminar ya resulta cómodo."],
+  bici_progresiva: ["Bicicleta progresiva", "20–45 min en llano o estática. Evita MTB, baches y postura muy flexionada al principio."],
+  movilidad_cadera: ["Movilidad suave de cadera", "30–40 s por lado, de pie y con apoyo. Rango pequeño, sin flexionar ni girar profundamente la columna."],
+  flexor_cadera: ["Flexor de cadera", "20–30 s por lado en zancada corta, pelvis ligeramente hacia dentro y sin arquear la zona lumbar."],
+  gemelo_pared: ["Gemelo en pared", "20–30 s por lado, tronco erguido y talón apoyado. Omítelo si aumenta el hormigueo del pie."],
+  respiracion_descarga: ["Respiración y descarga", "1–2 min tumbado, con rodillas flexionadas y pies apoyados. Sin forzar ninguna postura."],
+  rutina_viaje: ["Rutina corta de viaje", "8–10 min: brace, bird-dog corto, puente si es práctico y movilidad suave. Levántate cada 45–60 min en trayectos largos."],
+  turismo_vietnam: ["Actividad del viaje: turismo y marcha", "Camina según el itinerario y el semáforo S1, sin perseguir un número de pasos. Introduce pausas, alterna días exigentes y suaves, y usa mochila ligera o maleta con ruedas."],
+  descanso_activo: ["Descanso o paseo breve", "Recuperación activa 15–20 min si apetece. Revisa cómo está el pie respecto al día anterior."],
+  run_walk: ["Run/walk inicial", "5 min andando + 1 min trote/2 min marcha ×8. Sólo tras cumplir los criterios funcionales y en días no consecutivos."],
+  running_progresivo: ["Running progresivo", "Progresa de 2/2 a 3/1 y luego 5/1, sin aumentar también el ritmo. Retrocede si aparecen síntomas distales."],
+  tenis_inicial: ["Tenis: peloteo", "15–20 min, sin partido ni desplazamientos máximos. Preferible dobles al principio."],
+  tenis_progresivo: ["Tenis progresivo", "30–60 min. Aumenta por etapas y deja los partidos competitivos para cuando no haya respuesta al día siguiente."]
 };
 
 const PHASES = {
-  1: {name:"Fase 1 · control y movilidad", cls:"p1", warn:"Evitar moto, karts, cargar peso",
-      week:[["caminar_suave","plancha_rodillas","puente_gluteo"],
-            ["piscina_caminar","estiramiento_cadera"],
-            ["caminar_suave","estiramiento_piriforme"],
-            ["caminar_suave","plancha_rodillas","puente_gluteo"],
-            ["piscina_caminar","estiramiento_cadera"]]},
-  2: {name:"Fase 2 · progresión activa", cls:"p2", warn:"Seguir sin moto ni karts",
-      week:[["caminar_moderado","plancha_rodillas","puente_gluteo"],
-            ["piscina_nado_suave","gato_camello"],
-            ["bird_dog","estiramiento_isquios"],
-            ["caminar_moderado","plancha_rodillas","puente_gluteo"],
-            ["piscina_nado_suave","bird_dog"]]},
-  3: {name:"Fase 3 · fortalecimiento", cls:"p3", warn:"Valorar con el fisio antes de probar la moto",
-      week:[["sentadilla_silla","puente_una_pierna","plancha_lateral_corta"],
-            ["piscina_aquagym"],
-            ["bici_suave","gato_camello"],
-            ["foam_roller","sentadilla_silla"],
-            ["piscina_aquagym","estiramientos_generales"]]},
-  4: {name:"Fase 4 · consolidación", cls:"p4", warn:"Dolor con irradiación a la pierna = parar y consultar",
-      week:[["fuerza_funcional"],
-            ["bici_suave"],
-            ["moto_corta"],
-            ["fuerza_funcional"],
-            ["caminar_normal","estiramientos_generales"]]},
-  5: {name:"Fase 5 · rutina de crucero", cls:"p5", warn:"Progresa poco a poco: sube repeticiones o ritmo solo si no hay molestia lumbar",
-      week:[["fuerza_funcional","plancha_lateral_corta"],
-            ["caminar_rapido"],
-            ["fuerza_funcional","gato_camello"],
-            ["piscina_nado_suave"],
-            ["caminar_normal","estiramientos_generales"]]}
+  1: {name:"Fase 1 · proteger S1 y valorar", cls:"p1", warn:"Sin running, tenis, saltos, cargas pesadas ni estiramiento neural. Solicita exploración presencial de S1.",
+      week:[["brace","puente_corto","bird_dog_corto","sentarse_levantarse","clamshell","talones_bilateral"], ["caminar_20"], ["piscina_suave"], ["brace","puente_corto","bird_dog_corto","sentarse_levantarse","clamshell","talones_bilateral"], ["caminar_20"], ["piscina_suave"], ["descanso_activo"]]},
+  2: {name:"Fase 2 · preparar marcha y viaje", cls:"p2", warn:"Avanza sólo con fuerza conservada y pie estable. Si está amarillo, reduce; si está rojo, para y consulta.",
+      week:[["brace","puente_corto","bird_dog_corto","sentarse_levantarse","clamshell","dead_bug_apoyado","plancha_lateral_rodillas"], ["caminar_40"], ["piscina_suave"], ["brace","puente_corto","bird_dog_corto","sentarse_levantarse","clamshell","dead_bug_apoyado","plancha_lateral_rodillas"], ["caminar_60"], ["bici_15"], ["descanso_activo"]]},
+  3: {name:"Fase 3 · viaje y mantenimiento", cls:"p3", warn:"El turismo ya cuenta como entrenamiento. Alterna días exigentes y suaves; mochila ligera y maleta con ruedas.",
+      week:[["rutina_viaje","turismo_vietnam"], ["turismo_vietnam"], ["rutina_viaje","turismo_vietnam"], ["turismo_vietnam"], ["rutina_viaje","turismo_vietnam"], ["turismo_vietnam"], ["turismo_vietnam"]]},
+  4: {name:"Fase 4 · fuerza y resistencia", cls:"p4", warn:"No aumentes duración y resistencia a la vez. Cualquier empeoramiento neurológico bloquea la progresión.",
+      week:[["sentadilla","zancada_corta","hip_thrust","bird_dog_completo","dead_bug","plancha_lateral_rodillas","plancha_frontal"], ["piscina_progresiva"], ["bici_progresiva"], ["sentadilla","zancada_corta","hip_thrust","bird_dog_completo","dead_bug","plancha_lateral_rodillas","plancha_frontal"], ["piscina_progresiva"], ["caminar_60"], ["descanso_activo"]]},
+  5: {name:"Fase 5 · retorno al deporte", cls:"p5", warn:"Running y tenis sólo tras 60 min caminando, fuerza simétrica y ausencia de empeoramiento durante 24 h.",
+      week:[["sentadilla","zancada_corta","hip_thrust","bird_dog_completo","dead_bug","plancha_lateral_rodillas","plancha_frontal"], ["run_walk"], ["piscina_progresiva"], ["sentadilla","zancada_corta","hip_thrust","bird_dog_completo","dead_bug","plancha_lateral_rodillas","plancha_frontal"], ["bici_progresiva"], ["tenis_inicial"], ["descanso_activo"]]},
+  6: {name:"Fase 6 · normalización", cls:"p5", warn:"Mantén el semáforo: una fecha nunca obliga a progresar si el nervio no está preparado.",
+      week:[["sentadilla","zancada_corta","hip_thrust","bird_dog_completo","dead_bug","plancha_lateral_rodillas","plancha_frontal"], ["piscina_progresiva"], ["running_progresivo"], ["sentadilla","zancada_corta","hip_thrust","bird_dog_completo","dead_bug","plancha_lateral_rodillas","plancha_frontal"], ["bici_progresiva"], ["tenis_progresivo"], ["descanso_activo"]]}
 };
 
 const PHASE_RANGES = [
-  {phase:1, start:0,   end:10},
-  {phase:2, start:11,  end:24},
-  {phase:3, start:25,  end:38},
-  {phase:4, start:39,  end:51},
-  {phase:5, start:52,  end:153}
+  {phase:1, start:0,  end:9},
+  {phase:2, start:10, end:31},
+  {phase:3, start:32, end:49},
+  {phase:4, start:50, end:73},
+  {phase:5, start:74, end:103},
+  {phase:6, start:104, end:134}
 ];
 
-const START = new Date(2026,6,31);
+const START = new Date(2026,7,19);
 const END = new Date(2026,11,31);
 const TOTAL_DAYS = Math.round((END-START)/86400000)+1;
-const TODAY = new Date(2026,6,31);
+const TODAY = new Date();
+TODAY.setHours(0,0,0,0);
 
 function fmtDate(d){
   const dias=["dom","lun","mar","mié","jué","vié","sáb"];
@@ -211,18 +205,37 @@ function fmtDate(d){
   return `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]}`;
 }
 function isSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
+function localDateKey(d){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+function dailyMobilityIds(baseExIds){
+  if(baseExIds.includes('descanso_activo')) return [];
+  const result=['respiracion_descarga'];
+  const strengthIds=['brace','puente_corto','bird_dog_corto','sentarse_levantarse','clamshell','talones_bilateral','dead_bug_apoyado','plancha_lateral_rodillas','sentadilla','zancada_corta','hip_thrust','bird_dog_completo','dead_bug','plancha_frontal','rutina_viaje'];
+  const legActivityIds=['caminar_20','caminar_40','caminar_60','turismo_vietnam','bici_15','bici_progresiva','run_walk','running_progresivo','tenis_inicial','tenis_progresivo'];
+  const hasStrength=baseExIds.some(id=>strengthIds.includes(id));
+  const hasLegActivity=baseExIds.some(id=>legActivityIds.includes(id));
+  const hasPool=baseExIds.some(id=>id==='piscina_suave'||id==='piscina_progresiva');
+  if(hasStrength) result.push('movilidad_cadera','flexor_cadera');
+  if(hasLegActivity) result.push('flexor_cadera','gemelo_pared');
+  if(hasPool) result.push('flexor_cadera');
+  return [...new Set(result)];
+}
 
 function buildWeekdays(){
   const days=[];
   for(let i=0;i<TOTAL_DAYS;i++){
     const date=new Date(START); date.setDate(START.getDate()+i);
     const dow=date.getDay();
-    if(dow===0||dow===6) continue; // saltar fin de semana
     const range=PHASE_RANGES.find(r=>i>=r.start&&i<=r.end);
+    if(!range) continue;
     const phase=PHASES[range.phase];
-    const weekdayIndex=dow-1; // lunes=0 ... viernes=4
-    const exIds=phase.week[weekdayIndex];
-    days.push({index:i,date,phaseNum:range.phase,phase,exIds,key:date.toISOString().slice(0,10)});
+    const weekdayIndex=dow===0 ? 6 : dow-1; // lunes=0 ... domingo=6
+    const baseExIds=phase.week[weekdayIndex];
+    const exIds=[...baseExIds,...dailyMobilityIds(baseExIds)];
+    days.push({index:i,date,phaseNum:range.phase,phase,exIds,key:localDateKey(date)});
   }
   return days;
 }
@@ -236,8 +249,8 @@ function groupByWeek(days){
   let currentMonday=null;
   days.forEach(d=>{
     const monday=new Date(d.date);
-    monday.setDate(monday.getDate()-(monday.getDay()-1));
-    const key=monday.toISOString().slice(0,10);
+    monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
+    const key=localDateKey(monday);
     if(key!==currentMonday){
       if(current.length) weeks.push(current);
       current=[]; currentMonday=key;
@@ -276,7 +289,7 @@ function renderExercise(){
       dayDiv.className='day'+(isSameDay(d.date,TODAY)?' today':'');
       const headRow=document.createElement('div');
       headRow.className='day-head';
-      headRow.innerHTML=`<span class="day-date">${fmtDate(d.date)}</span><span class="phase-tag ${d.phase.cls}">Fase ${d.phaseNum}</span>`;
+      headRow.innerHTML=`<span class="day-date">${fmtDate(d.date)}</span><span class="phase-tag ${d.phase.cls}">${d.phase.name}</span>`;
       dayDiv.appendChild(headRow);
 
       d.exIds.forEach(exId=>{
@@ -301,14 +314,14 @@ function renderExercise(){
       });
 
       {
-        const stretchKey=`${d.key}_rutina_estiramientos`;
+        const stretchKey=`${d.key}_revision_s1`;
         const state=loadState('lumbar-plan-state');
         const isDone=!!state[stretchKey];
         const row=document.createElement('div');
         row.className='ex'+(isDone?' done':'');
         const cbId=`cb_${stretchKey}`;
         row.innerHTML=`<input type="checkbox" id="${cbId}" ${isDone?'checked':''}>
-          <label for="${cbId}"><span class="exname">Rutina de estiramientos</span><span class="exdetail">8 estiramientos, 5-10 min &middot; ver detalle en la pestaña Estiramientos</span></label>`;
+          <label for="${cbId}"><span class="exname">Revisión S1 a las 24 h</span><span class="exdetail">Compara hormigueo, adormecimiento y fuerza con el día anterior; registra el semáforo en Seguimiento diario.</span></label>`;
         const cb=row.querySelector('input');
         cb.addEventListener('change',()=>{
           const st=loadState('lumbar-plan-state');
@@ -323,7 +336,7 @@ function renderExercise(){
       if(d.phase.warn){
         const warn=document.createElement('p');
         warn.className='warn';
-        const icon = d.phaseNum===3 ? 'ti-alert-circle' : (d.phaseNum===4||d.phaseNum===5 ? 'ti-alert-triangle' : 'ti-ban');
+        const icon = d.phaseNum===1 ? 'ti-ban' : 'ti-alert-triangle';
         warn.innerHTML=`<i class="ti ${icon}"></i>${d.phase.warn}`;
         dayDiv.appendChild(warn);
       }
@@ -393,17 +406,18 @@ function renderDiet(){
 
 /* ---------- ESTIRAMIENTOS ---------- */
 const DEFAULT_STRETCHES = [
-  ["Rodillas al pecho", "Tumbado boca arriba, lleva ambas rodillas al pecho y abraza suavemente. Descarga toda la zona lumbar. 30-40 segundos, 2 veces."],
-  ["Rodilla al pecho, una pierna", "Igual que el anterior pero con una sola pierna, la otra apoyada y flexionada en el suelo. 20-30 segundos por lado."],
-  ["Estiramiento de piriforme", "Tumbado boca arriba, cruza un tobillo sobre la rodilla contraria y tira suavemente de la pierna de abajo hacia el pecho. Alivia mucho la zona entre columna y nalga. 30 segundos por lado."],
-  ["Estiramiento de isquiotibiales (tumbado)", "Tumbado, eleva una pierna estirada sujetando con una toalla o cinta detrás del muslo, rodilla contraria flexionada y pie apoyado. Sin forzar la rodilla elevada. 30 segundos por lado."],
-  ["Gato-camello", "A cuatro patas, alterna arquear la espalda hacia arriba (como un gato) y hundirla suavemente hacia abajo. Movimiento lento, sin forzar el rango. 8-10 repeticiones."],
-  ["Estiramiento de cadera (flexor)", "De rodillas, adelanta una pierna en ángulo de 90° y estira la otra hacia atrás, empuja la cadera suavemente hacia delante. 30 segundos por lado."],
-  ["Postura del niño (suave)", "De rodillas, siéntate sobre los talones y estira los brazos hacia delante, dejando caer el pecho hacia el suelo sin forzar. Si molesta, reduce el rango. 30-40 segundos."],
-  ["Rotación de rodillas tumbado", "Tumbado boca arriba, rodillas flexionadas juntas, deja caer ambas rodillas suavemente hacia un lado y luego hacia el otro, sin forzar el giro. 20 segundos por lado."]
+  ["Movilidad suave de cadera", "De pie y con apoyo, mueve cada cadera en un rango pequeño y cómodo durante 30–40 segundos. Sin flexionar ni girar profundamente la columna."],
+  ["Flexor de cadera", "Zancada corta, pelvis ligeramente hacia dentro. 20–30 segundos por lado, sin arquear la zona lumbar."],
+  ["Gemelo en pared", "Pierna atrás, talón apoyado y tronco erguido. 20–30 segundos por lado. Elimínalo si reproduce hormigueo en el pie."],
+  ["Respiración y descarga", "Tumbado con rodillas flexionadas y pies apoyados, respira lentamente durante 1–2 minutos sin forzar ninguna postura."]
 ];
+const STRETCH_PLAN_VERSION = 's1-v2';
 let STRETCHES = loadState('cfg-stretches');
-if(!Array.isArray(STRETCHES) || STRETCHES.length === 0) STRETCHES = DEFAULT_STRETCHES;
+if(localStorage.getItem('cfg-stretches-version') !== STRETCH_PLAN_VERSION || !Array.isArray(STRETCHES) || STRETCHES.length === 0) {
+  STRETCHES = DEFAULT_STRETCHES;
+  saveState('cfg-stretches', STRETCHES);
+  localStorage.setItem('cfg-stretches-version', STRETCH_PLAN_VERSION);
+}
 
 function renderStretches(){
   const el=document.getElementById('stretch-list');
@@ -429,7 +443,7 @@ function renderStretches(){
 }
 
 /* ---------- SEGUIMIENTO DIARIO ---------- */
-function todayStr(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function todayStr(){ return localDateKey(new Date()); }
 function fmtDateStr(s){
   const [y,m,d]=s.split('-').map(Number);
   const meses=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
@@ -442,10 +456,12 @@ function renderHealth(){
   const data = loadState('health-log');
   const dates = Object.keys(data).sort().reverse();
   if(!dates.length){ hist.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Todavía no hay registros.</p>'; return; }
-  let html = '<div class="table-scroll"><table class="hist"><tr><th>Fecha</th><th>Peso</th><th>TA</th><th>Pulso</th><th>Sueño</th><th>Agua</th><th>Dolor</th><th>Medic.</th><th></th></tr>';
+  let html = '<div class="table-scroll"><table class="hist"><tr><th>Fecha</th><th>Peso</th><th>TA</th><th>Pulso</th><th>Sueño</th><th>Agua</th><th>Dolor</th><th>Parestesia</th><th>24 h</th><th>Alertas</th><th>Medic.</th><th></th></tr>';
   dates.forEach(dt=>{
     const r=data[dt];
-    html += `<tr><td>${fmtDateStr(dt)}</td><td>${r.peso??''}</td><td>${(r.tasis||r.tadia)?(r.tasis||'')+'/'+(r.tadia||''):''}</td><td>${r.pulso??''}</td><td>${r.sueno??''}</td><td>${r.agua??''}</td><td>${r.dolor??''}</td><td>${r.medicacion?'<i class="ti ti-check"></i>':''}</td><td><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></td></tr>`;
+    const alerts = [r.adormecimiento?'Adormecimiento':'', r.debilidad?'Debilidad':''].filter(Boolean).join(' · ');
+    const traffic = r.semaforo ? `<span class="status-dot ${r.semaforo}">${r.semaforo}</span>` : '';
+    html += `<tr><td>${fmtDateStr(dt)}</td><td>${r.peso??''}</td><td>${(r.tasis||r.tadia)?(r.tasis||'')+'/'+(r.tadia||''):''}</td><td>${r.pulso??''}</td><td>${r.sueno??''}</td><td>${r.agua??''}</td><td>${r.dolor??''}</td><td>${r.parestesia??''}</td><td>${traffic}</td><td class="alert-cell">${alerts}</td><td>${r.medicacion?'<i class="ti ti-check"></i>':''}</td><td><button class="del-btn" data-del="${dt}"><i class="ti ti-trash"></i></button></td></tr>`;
   });
   html += '</table></div>';
   hist.innerHTML = html;
@@ -458,7 +474,7 @@ function renderHealth(){
 document.getElementById('h-save').addEventListener('click',()=>{
   const fecha = document.getElementById('h-fecha').value || todayStr();
   const st = loadState('health-log');
-  st[fecha] = {
+  const entry = {
     peso: document.getElementById('h-peso').value || null,
     tasis: document.getElementById('h-tasis').value || null,
     tadia: document.getElementById('h-tadia').value || null,
@@ -466,10 +482,21 @@ document.getElementById('h-save').addEventListener('click',()=>{
     sueno: document.getElementById('h-sueno').value || null,
     agua: document.getElementById('h-agua').value || null,
     dolor: document.getElementById('h-dolor').value || null,
+    parestesia: document.getElementById('h-parestesia').value,
+    semaforo: document.getElementById('h-semaforo').value,
+    adormecimiento: document.getElementById('h-adormecimiento').checked,
+    debilidad: document.getElementById('h-debilidad').checked,
     medicacion: document.getElementById('h-medicacion').checked
   };
+  if(entry.parestesia === '3' || entry.adormecimiento || entry.debilidad) entry.semaforo = 'rojo';
+  st[fecha] = entry;
   saveState('health-log', st);
   renderHealth();
+  if(entry.debilidad || entry.adormecimiento || entry.semaforo === 'rojo') {
+    showAlert('Has registrado una señal roja. No progreses el ejercicio y solicita valoración sanitaria. Si hay alteraciones de esfínteres, anestesia perineal, síntomas en ambas piernas o debilidad rápidamente progresiva, acude a urgencias.');
+  } else if(entry.semaforo === 'amarillo') {
+    showAlert('Respuesta amarilla registrada: reduce el volumen un 25–50% durante 2–3 días y no aumentes cargas hasta volver a verde.');
+  }
 });
 
 /* ---------- CUIDADO PERSONAL ---------- */
@@ -588,6 +615,7 @@ function renderEstadisticas() {
   const labels = recentDates.map(d => d.slice(8,10)+'/'+d.slice(5,7));
   const pesos = recentDates.map(d => healthData[d].peso || null);
   const dolores = recentDates.map(d => healthData[d].dolor || null);
+  const parestesias = recentDates.map(d => healthData[d].parestesia ?? null);
   const tasis = recentDates.map(d => healthData[d].tasis || null);
   const tadia = recentDates.map(d => healthData[d].tadia || null);
   const sueno = recentDates.map(d => healthData[d].sueno || null);
@@ -608,6 +636,26 @@ function renderEstadisticas() {
         y: { type: 'linear', display: true, position: 'left', title: {display:true, text:'Peso (kg)'} },
         y1: { type: 'linear', display: true, position: 'right', min: 0, max: 10, title: {display:true, text:'Dolor'} }
       }
+    }
+  });
+
+  initOrUpdateChart('chart-parestesia', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Parestesia S1 (0 ninguna · 3 constante)',
+        data: parestesias,
+        borderColor: '#d97706',
+        backgroundColor: 'rgba(217,119,6,.15)',
+        fill: true,
+        tension: .2,
+        spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { y: { min: 0, max: 3, ticks: { stepSize: 1 } } }
     }
   });
 
@@ -646,8 +694,8 @@ function renderEstadisticas() {
       totalEx++;
       if (stEx[`${d.key}_${exId}`]) doneEx++;
     });
-    totalEx++; // Stretches routine
-    if (stEx[`${d.key}_rutina_estiramientos`]) doneEx++;
+    totalEx++; // Revisión neurológica a las 24 h
+    if (stEx[`${d.key}_revision_s1`]) doneEx++;
   }
   const pctEx = totalEx === 0 ? 0 : Math.round((doneEx/totalEx)*100);
 

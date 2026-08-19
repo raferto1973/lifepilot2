@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifepilot-v4';
+const CACHE_NAME = 'lifepilot-v7-vietnam';
 const urlsToCache = [
   './index.html',
   './style.css',

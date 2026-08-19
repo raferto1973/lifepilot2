@@ -25,7 +25,7 @@
       <button class="reset" id="settings-btn"><i class="ti ti-adjustments" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Ajustes</button>
     </div>
   </div>
-  <p class="sub" style="margin-top: 0;">Plan de recuperación, ejercicio y alimentación &middot; 31 julio &ndash; 31 diciembre 2026</p>
+  <p class="sub" style="margin-top: 0;">Plan actualizado L5-S1/S1 &middot; 19 agosto &ndash; 31 diciembre 2026</p>
 
   <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
     <p style="margin:0;flex:1;min-width:200px">Sincroniza tus datos con Dropbox para acceder a tu plan desde cualquier dispositivo.</p>
@@ -47,6 +47,55 @@
   </div>
 
   <div id="tab-ejercicio" class="tabpanel active">
+    <div class="safety-card">
+      <div class="safety-title"><i class="ti ti-stethoscope"></i> Antes de aumentar cargas</div>
+      <p>La parestesia del borde externo del pie izquierdo requiere una exploración presencial de S1 (fuerza, reflejo aquíleo y sensibilidad). El calendario es orientativo: manda la respuesta del nervio.</p>
+      <p class="urgent"><strong>Urgencias:</strong> alteraciones de orina/heces, pérdida de sensibilidad perineal, síntomas en ambas piernas o debilidad que progresa rápidamente.</p>
+    </div>
+
+    <div class="traffic-grid" aria-label="Semáforo de progresión">
+      <div class="traffic-card green"><strong>Verde · progresar</strong><span>Dolor 0–2/10, pie igual o mejor y recuperación completa al día siguiente.</span></div>
+      <div class="traffic-card amber"><strong>Amarillo · reducir</strong><span>Más hormigueo o rigidez residual: baja el volumen un 25–50% durante 2–3 días.</span></div>
+      <div class="traffic-card red"><strong>Rojo · parar</strong><span>Adormecimiento constante, irradiación nueva o debilidad: suspende la progresión y consulta.</span></div>
+    </div>
+
+    <div class="card criteria-card">
+      <p><strong>Regla del plan:</strong> cambia sólo una variable cada vez (duración, repeticiones o resistencia) y como máximo un 10–15%. Running y tenis sólo aparecen tras caminar 60 min sin empeorar, mantener la fuerza y tolerar el trabajo funcional ese día y el siguiente.</p>
+    </div>
+
+    <div class="card travel-card">
+      <div class="travel-title"><i class="ti ti-plane"></i> Vietnam · 20 septiembre – 7 octubre</div>
+      <p>Durante estas fechas el viaje sustituye al entrenamiento habitual. El checklist prioriza turismo y marcha tolerada, una rutina corta tres días por semana y movilidad posterior. No hay objetivo obligatorio de pasos.</p>
+      <ul>
+        <li>En avión, tren o autobús: cambia de postura y levántate aproximadamente cada 45–60 min cuando sea posible.</li>
+        <li>Alterna jornadas exigentes y suaves; introduce pausas antes de que aumenten los síntomas.</li>
+        <li>Mochila ligera y maleta con ruedas. Si el pie entra en amarillo, reduce el día siguiente; si entra en rojo, suspende la progresión y consulta.</li>
+      </ul>
+    </div>
+
+    <details class="card treatment-card">
+      <summary>Tratamiento conservador y qué evitar</summary>
+      <ul>
+        <li>Mantén la actividad cotidiana tolerada; evita el reposo prolongado en cama.</li>
+        <li>No inicies ni cambies medicación sin revisar antecedentes y tratamiento actual con tu médico o farmacéutico.</li>
+        <li>Para ciática, NICE desaconseja gabapentinoides, corticoides orales y benzodiacepinas; los antiinflamatorios requieren valorar riesgos y usarse, si proceden, a la menor dosis y durante el menor tiempo.</li>
+        <li>Tracción, TENS, ultrasonidos y acupuntura no sustituyen el programa activo. La terapia manual, si se utiliza, debe acompañar al ejercicio.</li>
+      </ul>
+      <p class="source-links"><a href="https://www.nice.org.uk/guidance/ng59/chapter/Recommendations" target="_blank" rel="noopener">Guía NICE NG59</a> · <a href="https://www.orthopt.org/content/s/interventions-for-the-management-of-acute-and-chronic-low-back-pain-revision-2021" target="_blank" rel="noopener">Guía APTA/JOSPT</a></p>
+    </details>
+
+    <details class="card device-card">
+      <summary><span>TESMED MAX 7.8 Power</span><span class="device-status">Pendiente de autorización</span></summary>
+      <p><strong>No se han añadido sesiones al calendario.</strong> El manual contraindica el dispositivo cuando existen alteraciones de nervios periféricos; actualmente hay parestesias compatibles con S1. También contraindica su uso con hipertensión arterial grave, marcapasos/desfibrilador, arritmias o cardiopatía grave, epilepsia y embarazo, entre otras situaciones.</p>
+      <ul>
+        <li>TENS puede aliviar transitoriamente algunas molestias, pero no corrige la extrusión ni recupera el nervio; NICE no lo recomienda para dolor lumbar con o sin ciática.</li>
+        <li>EMS no sustituye los ejercicios voluntarios y no debe aplicarse sobre lumbar, glúteo o pierna para este episodio sin indicación y colocación definidas por un profesional.</li>
+        <li>Nunca coloques electrodos en cabeza, cuello/seno carotídeo, atravesando el tórax, sobre piel lesionada o en zonas con sensibilidad alterada.</li>
+        <li>Si un médico lo autoriza expresamente, sigue el programa y colocación indicados: primera sesión sentado o tumbado, intensidad inicial cero y aumento gradual; suspende ante mareo, dolor, irritación o aumento de los síntomas S1.</li>
+      </ul>
+      <p class="source-links"><a href="https://cdn.shopify.com/s/files/1/0513/3680/6597/files/MANUALE_MAX_7.8_-_08_2021.pdf?v=1638375283" target="_blank" rel="noopener">Manual oficial TESMED MAX 7.8</a> · <a href="https://tesmed.com/products/tesmed-7-8-power" target="_blank" rel="noopener">Ficha oficial del equipo</a></p>
+    </details>
+
     <div class="top-bar">
       <div class="progress-pill">Progreso ejercicios: <b id="progress-text">0 / 0</b></div>
       <button class="reset" id="reset-btn"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Reiniciar marcas</button>
@@ -89,7 +138,7 @@
     <div class="card">
       <p><strong>Antes de empezar</strong></p>
       <ul>
-        <li>Estira solo hasta notar tensión suave, nunca dolor. Si un estiramiento te provoca dolor agudo o dolor que baja por la pierna, páralo.</li>
+        <li>Haz sólo movilidad suave. Si aumenta el hormigueo, aparece adormecimiento o el síntoma baja más hacia el pie, páralo.</li>
         <li>Mejor en caliente: después de caminar unos minutos o tras la ducha, no en frío.</li>
         <li>Movimientos lentos y controlados, sin rebotes ni tirones bruscos.</li>
         <li>Evita la flexión de tronco hacia delante con las piernas rectas (tocarse las puntas de pie de pie) y las rotaciones bruscas de columna — son las posturas que más cargan tu zona lumbar-izquierda ahora mismo.</li>
@@ -97,17 +146,17 @@
     </div>
 
     <div class="card">
-      <p><strong>Rutina diaria recomendada</strong> (5-10 min, se puede hacer cualquier día, incluido fin de semana)</p>
+      <p><strong>Rutina opcional</strong> (5 min, sólo si mantiene el pie igual o mejor)</p>
       <div id="stretch-list"></div>
     </div>
 
     <div class="card">
       <p><strong>Evita por ahora</strong></p>
       <ul>
-        <li>Estiramiento de isquiotibiales tocando puntas de pie de pie (mejor tumbado, como se indica arriba).</li>
+        <li>Estiramientos intensos de isquiotibiales o del nervio ciático, también tumbado, mientras exista parestesia S1.</li>
         <li>Torsiones profundas de columna sentado (tipo yoga "torsión espinal" forzada).</li>
         <li>Flexiones profundas con carga (levantar peso doblando la espalda en vez de las rodillas).</li>
-        <li>Cualquier estiramiento que reproduzca el dolor entre columna y nalga del lado izquierdo.</li>
+        <li>Cualquier estiramiento que aumente el hormigueo o lleve los síntomas más lejos hacia el pie izquierdo.</li>
       </ul>
     </div>
   </div>
@@ -124,8 +173,12 @@
         <div class="field"><label for="h-sueno">Horas de sueño</label><input type="number" step="0.5" id="h-sueno" placeholder="7"></div>
         <div class="field"><label for="h-agua">Vasos de agua</label><input type="number" id="h-agua" placeholder="8"></div>
         <div class="field"><label for="h-dolor">Dolor lumbar (0-10)</label><input type="number" min="0" max="10" id="h-dolor" placeholder="2"></div>
+        <div class="field"><label for="h-parestesia">Parestesia pie S1 (0-3)</label><select id="h-parestesia"><option value="0">0 · Ninguna</option><option value="1">1 · Ocasional</option><option value="2">2 · Frecuente</option><option value="3">3 · Constante</option></select></div>
+        <div class="field"><label for="h-semaforo">Respuesta en 24 h</label><select id="h-semaforo"><option value="verde">Verde · igual o mejor</option><option value="amarillo">Amarillo · reducir carga</option><option value="rojo">Rojo · parar y consultar</option></select></div>
       </div>
       <div class="chk-row"><input type="checkbox" id="h-medicacion"><label for="h-medicacion">Medicación de la tensión tomada hoy</label></div>
+      <div class="chk-row danger-check"><input type="checkbox" id="h-adormecimiento"><label for="h-adormecimiento">Adormecimiento permanente hoy</label></div>
+      <div class="chk-row danger-check"><input type="checkbox" id="h-debilidad"><label for="h-debilidad">Debilidad nueva en pantorrilla o pie</label></div>
       <button class="save-btn" id="h-save" style="margin-top:10px">Guardar registro</button>
     </div>
     <div class="card">
@@ -174,6 +227,12 @@
       <p><strong>Evolución de Peso y Dolor Lumbar</strong></p>
       <div style="position: relative; height:250px; width:100%">
         <canvas id="chart-peso-dolor"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <p><strong>Evolución neurológica S1</strong></p>
+      <div style="position: relative; height:220px; width:100%">
+        <canvas id="chart-parestesia"></canvas>
       </div>
     </div>
     <div class="card">

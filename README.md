@@ -1,50 +1,103 @@
-# Life Pilot 🧭
+# Life Pilot
 
-**Life Pilot** es una aplicación web progresiva (PWA) diseñada para el seguimiento integral de la salud, recuperación física, alimentación y hábitos diarios. Creada para ofrecer un control total sobre rutinas médicas (especialmente enfocado a la recuperación lumbar y control de tensión arterial), la app permite registrar el progreso diario mediante una interfaz moderna, *responsive* e instalable en cualquier dispositivo.
+Life Pilot es una aplicación web progresiva (PWA) para seguir un plan personal de recuperación L5-S1/S1, actividad física, alimentación, constantes de salud y hábitos diarios. Funciona en navegador, se puede instalar y conserva los datos en el dispositivo mediante `localStorage`.
 
-## 🌟 Características Principales
+> El contenido sanitario de la aplicación es orientativo y no sustituye una exploración ni una indicación profesional. La debilidad progresiva, alteraciones de esfínteres, anestesia perineal o síntomas importantes en ambas piernas requieren atención urgente.
 
-* **Seguimiento Físico y Médico:** Registro diario de Peso, Tensión Arterial (Sistólica y Diastólica), Pulso, Horas de Sueño, Vasos de Agua, Nivel de Dolor y Medicación.
-* **Rutina de Ejercicios y Estiramientos:** Control de rutinas de rehabilitación con *checkboxes* interactivos. Los ejercicios están preprogramados por semanas y fases de intensidad creciente.
-* **Plan de Alimentación Dinámico:** Tabla de dieta semanal personalizable.
-* **Cuidado Personal:** Checklist diario para hábitos de higiene y cuidado, completamente personalizable por el usuario.
-* **Diario de Notas:** Espacio para apuntar observaciones médicas o sensaciones diarias.
-* **Panel de Estadísticas y Gráficas:** Visualización de la evolución mediante gráficas generadas con *Chart.js*, incluyendo:
-  * Evolución de Peso y Dolor.
-  * Tensión Arterial.
-  * Hábitos (Sueño y Agua).
-  * Porcentaje de Cumplimiento global en Ejercicio y Cuidado Personal (Doughnut charts).
-* **Configuración Personalizada:** Panel de Ajustes (⚙️) integrado mediante modales propios, que permite al usuario añadir, editar o eliminar elementos de la dieta, la tabla de estiramientos y la lista de cuidado personal.
-* **Sincronización en la Nube:** Integración oficial con la API de **Dropbox** para guardar y recuperar todo el progreso y configuración a través de diferentes dispositivos.
-* **Aplicación Instalable (PWA):** Life Pilot funciona offline y se puede instalar como aplicación nativa en iOS, Android y Windows gracias a su *Service Worker* integrado.
+## Plan L5-S1/S1
 
-## 🛠️ Tecnologías Utilizadas
+El calendario activo abarca del 19 de agosto al 31 de diciembre de 2026. Las fechas orientan la organización, pero la progresión depende del semáforo neurológico y de la respuesta durante las 24 horas siguientes.
 
-* **HTML5, CSS3, JavaScript (Vanilla):** Sin frameworks pesados para garantizar una carga ultrarrápida.
-* **Chart.js:** Para el renderizado de gráficos y estadísticas.
-* **Tabler Icons:** Iconografía limpia y moderna.
-* **Dropbox SDK:** Sincronización y backup de datos.
-* **Vercel:** Plataforma de despliegue continuo (CI/CD) conectada automáticamente al repositorio de GitHub.
+| Fase | Fechas | Objetivo |
+| --- | --- | --- |
+| 1. Proteger S1 y valorar | 19–28 agosto | Actividad tolerada, fuerza base y exploración presencial de S1 |
+| 2. Preparar marcha y viaje | 29 agosto–19 septiembre | Aumentar marcha, fuerza y tolerancia funcional |
+| 3. Vietnam | 20 septiembre–7 octubre | Turismo como actividad principal, control de carga y rutina corta |
+| 4. Fuerza y resistencia | 8–31 octubre | Recuperar fuerza, piscina y bicicleta progresivamente |
+| 5. Retorno al deporte | 1–30 noviembre | Introducir run/walk y peloteo si se cumplen los criterios |
+| 6. Normalización | 1–31 diciembre | Consolidar fuerza, running, bicicleta, piscina y tenis |
 
-## 🚀 Despliegue y Sincronización Automática
+### Semáforo de progresión
 
-El proyecto está configurado para **despliegue continuo (CD) mediante Vercel**. Cualquier *commit* y *push* dirigido a la rama `master` en GitHub desencadenará de forma automática una nueva compilación y publicación del sitio web en segundos.
+- **Verde:** dolor 0–2/10, pie igual o mejor y recuperación completa al día siguiente.
+- **Amarillo:** más hormigueo o rigidez residual; reducir el volumen un 25–50 % durante 2–3 días.
+- **Rojo:** adormecimiento constante, irradiación nueva o debilidad; detener la progresión y consultar.
 
-## 💾 Estructura de Datos (Local Storage)
+Los estiramientos y la movilidad se incorporan directamente al checklist de cada día según la sesión. El plan evita estiramiento neural, flexión lumbar profunda y cualquier movimiento que lleve los síntomas más lejos hacia el pie.
 
-La aplicación prima la privacidad y rapidez, guardando todos los datos en el navegador del usuario utilizando `localStorage`. La estructura de guardado incluye:
-* `lumbar-plan-state`: Estado de los ejercicios de la fase actual.
-* `diet-state`, `stretch-state`: Progreso diario.
-* `health-log`: Registro histórico de constantes vitales.
-* `care-log`: Registro histórico de cuidados personales.
-* `notes-log`: Histórico del diario.
-* `cfg-diet`, `cfg-stretches`, `cfg-care`: Configuración dinámica personalizada por el usuario.
+### Viaje a Vietnam
 
-Todos estos datos se empaquetan en un archivo `JSON` único al sincronizar con Dropbox.
+Entre el 20 de septiembre y el 7 de octubre el calendario cambia automáticamente al modo viaje:
 
-## 📱 Instalación (PWA)
+- El turismo y la marcha sustituyen al entrenamiento habitual.
+- La rutina de mantenimiento aparece tres días por semana.
+- No hay un objetivo obligatorio de pasos.
+- Se recomiendan pausas, alternar jornadas exigentes y suaves, usar mochila ligera y maleta con ruedas.
+- En desplazamientos largos se recuerda cambiar de postura y levantarse cada 45–60 minutos cuando sea posible.
 
-Al acceder a la URL de producción desde un dispositivo móvil (Safari/Chrome), el usuario verá un botón de **Instalar App** que permite añadir Life Pilot a la pantalla de inicio, operando a pantalla completa como una app nativa.
+### TESMED MAX 7.8 Power
 
----
-*Desarrollado para la mejora continua del bienestar personal.*
+El equipo figura como **pendiente de autorización médica** y no genera sesiones en el calendario. El manual del fabricante contraindica su uso cuando existen alteraciones de nervios periféricos; actualmente se vigilan parestesias compatibles con S1. También recoge contraindicaciones como hipertensión arterial grave, marcapasos/desfibrilador, arritmias o cardiopatía grave, epilepsia y embarazo.
+
+La guía NICE NG59 no recomienda TENS para dolor lumbar con o sin ciática. La aplicación enlaza el manual oficial y muestra las principales normas de seguridad, pero no propone programas ni colocación de electrodos.
+
+Fuentes: [manual oficial TESMED MAX 7.8](https://cdn.shopify.com/s/files/1/0513/3680/6597/files/MANUALE_MAX_7.8_-_08_2021.pdf?v=1638375283), [ficha oficial del equipo](https://tesmed.com/products/tesmed-7-8-power) y [NICE NG59](https://www.nice.org.uk/guidance/ng59/chapter/Recommendations).
+
+## Funciones
+
+- Checklist diario de ejercicio, movilidad, estiramientos y revisión S1 a 24 horas.
+- Registro de peso, tensión arterial, pulso, sueño, agua, dolor y medicación.
+- Seguimiento de parestesia S1, adormecimiento, debilidad y semáforo diario.
+- Gráficas de peso, dolor, parestesia, tensión, sueño, agua y cumplimiento.
+- Menú semanal y checklist de alimentación.
+- Cuidado personal y diario de notas.
+- Configuración de dieta, movilidad y cuidados.
+- Sincronización del progreso mediante Dropbox.
+- Instalación PWA y funcionamiento offline.
+
+## Ejecutar en local
+
+Requiere Python 3 disponible en el `PATH`.
+
+```powershell
+cd "C:\Users\rafer\OneDrive\Escritorio\LIFEPILOT2"
+python -m http.server 8000
+```
+
+Abrir [http://localhost:8000](http://localhost:8000) y mantener PowerShell abierto. Para detener el servidor, pulsar `Ctrl+C`.
+
+No se recomienda abrir `index.html` directamente porque el service worker y algunas funciones de la PWA necesitan un servidor HTTP.
+
+## Tecnología y estructura
+
+- HTML5, CSS3 y JavaScript sin framework.
+- Chart.js para las gráficas.
+- Tabler Icons para iconografía.
+- Dropbox SDK para sincronización.
+- Service worker y manifiesto para la PWA.
+
+Archivos principales:
+
+- `index.html`: interfaz y contenido informativo.
+- `app.js`: calendario, estado, seguimiento, gráficas y Dropbox.
+- `style.css`: presentación responsive y modo oscuro.
+- `sw.js`: caché y funcionamiento offline.
+- `manifest.json`: metadatos de instalación.
+- `plan_recuperacion_ejercicio_dieta_4.html`: versión histórica independiente; la aplicación activa parte de `index.html`.
+
+## Datos locales y privacidad
+
+Los datos se guardan en el navegador. Las claves principales son:
+
+- `lumbar-plan-state`: marcas del calendario de ejercicio.
+- `diet-state` y `stretch-state`: progreso de alimentación y movilidad.
+- `health-log`: constantes y seguimiento neurológico.
+- `care-log`: cuidado personal.
+- `notes-log`: diario.
+- `cfg-diet`, `cfg-stretches` y `cfg-care`: configuración personalizada local.
+
+Dropbox sincroniza las claves de progreso configuradas en `DATA_KEYS`. No se debe incluir información clínica sensible si la cuenta o el dispositivo no están adecuadamente protegidos.
+
+## Despliegue
+
+El repositorio está conectado a Vercel. Un push a `master` inicia el despliegue continuo configurado para el proyecto.

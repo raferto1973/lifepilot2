@@ -66,7 +66,7 @@
   .badge{display:inline-block;font-size:11px;padding:1px 8px;border-radius:9px;background:var(--surface-0);color:var(--text-secondary);margin-left:6px}
   .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px}
   .field label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px}
-  .field input, .field textarea{width:100%;padding:7px 8px;border-radius:var(--radius);border:0.5px solid var(--border);
+  .field input, .field textarea, .field select{width:100%;padding:7px 8px;border-radius:var(--radius);border:0.5px solid var(--border);
     background:var(--surface-0);color:var(--text-primary);font-size:13px;font-family:inherit}
   .field textarea{resize:vertical;min-height:80px}
   .chk-row{display:flex;align-items:center;gap:6px;font-size:13px;padding:5px 0}
@@ -84,6 +84,31 @@
   .note-text{font-size:13.5px;margin-top:4px;white-space:pre-wrap}
   .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .table-scroll table{min-width:520px}
+  .safety-card{background:color-mix(in srgb,var(--text-danger) 6%,var(--surface-1));border:1px solid color-mix(in srgb,var(--text-danger) 35%,var(--border));border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+  .safety-card p{font-size:13.5px;margin:.35rem 0 0}
+  .safety-title{font-size:14px;font-weight:700;color:var(--text-danger)}
+  .safety-title i{margin-right:6px;vertical-align:-2px}
+  .safety-card .urgent{font-size:12.5px}
+  .traffic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+  .traffic-card{border-radius:10px;padding:10px 12px;border:1px solid var(--border);font-size:12px;background:var(--surface-1)}
+  .traffic-card strong,.traffic-card span{display:block}
+  .traffic-card span{color:var(--text-secondary);margin-top:3px;line-height:1.4}
+  .traffic-card.green{border-top:4px solid #16855b}.traffic-card.amber{border-top:4px solid #d97706}.traffic-card.red{border-top:4px solid #c24141}
+  .criteria-card{border-left:4px solid var(--border-accent)}
+  .travel-card{border-left:4px solid #3b82c4;background:color-mix(in srgb,#3b82c4 5%,var(--surface-1))}
+  .travel-title{font-size:14px;font-weight:700;color:#286997;margin-bottom:5px}
+  .travel-title i{margin-right:6px;vertical-align:-2px}
+  .treatment-card summary{cursor:pointer;font-size:13.5px;font-weight:700}
+  .treatment-card[open] summary{margin-bottom:8px}
+  .device-card summary{cursor:pointer;font-size:13.5px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .device-card[open] summary{margin-bottom:8px}
+  .device-status{font-size:10.5px;color:#8f2424;background:#fde1e1;border-radius:12px;padding:3px 8px;white-space:nowrap}
+  .source-links{margin-top:10px!important;font-size:12px!important}
+  .source-links a{color:var(--border-accent)}
+  .danger-check{color:var(--text-danger)}
+  .status-dot{display:inline-block;border-radius:10px;padding:1px 7px;font-size:11px;text-transform:capitalize;white-space:nowrap}
+  .status-dot.verde{background:#d9f5e8;color:#075f41}.status-dot.amarillo{background:#fff0c2;color:#7a4800}.status-dot.rojo{background:#fde1e1;color:#8f2424}
+  .alert-cell{color:var(--text-danger);font-weight:600;white-space:nowrap}
 
   @media (max-width:600px){
     body{padding:1rem .75rem 3rem}
@@ -104,6 +129,7 @@
     .form-grid{grid-template-columns:1fr 1fr;gap:10px}
     table.menu{font-size:12px}
     table.menu th, table.menu td{padding:6px 4px}
+    .traffic-grid{grid-template-columns:1fr}
   }
   @media (max-width:380px){
     .form-grid{grid-template-columns:1fr}
