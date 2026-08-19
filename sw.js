@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifepilot-v9-diet-tracking';
+const CACHE_NAME = 'lifepilot-v10-plan-24-aug';
 const urlsToCache = [
   './index.html',
   './style.css',

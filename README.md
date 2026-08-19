@@ -6,11 +6,11 @@ Life Pilot es una aplicación web progresiva (PWA) para seguir un plan personal 
 
 ## Plan L5-S1/S1
 
-El calendario activo abarca del 19 de agosto al 31 de diciembre de 2026. Las fechas orientan la organización, pero la progresión depende del semáforo neurológico y de la respuesta durante las 24 horas siguientes.
+El calendario activo abarca del 24 de agosto al 31 de diciembre de 2026. Las fechas orientan la organización, pero la progresión depende del semáforo neurológico y de la respuesta durante las 24 horas siguientes.
 
 | Fase | Fechas | Objetivo |
 | --- | --- | --- |
-| 1. Proteger S1 y valorar | 19–28 agosto | Actividad tolerada, fuerza base y exploración presencial de S1 |
+| 1. Proteger S1 y valorar | 24–28 agosto | Actividad tolerada, fuerza base y exploración presencial de S1 |
 | 2. Preparar marcha y viaje | 29 agosto–19 septiembre | Aumentar marcha, fuerza y tolerancia funcional |
 | 3. Vietnam | 20 septiembre–7 octubre | Turismo como actividad principal, control de carga y rutina corta |
 | 4. Fuerza y resistencia | 8–31 octubre | Recuperar fuerza, piscina y bicicleta progresivamente |
@@ -23,7 +23,7 @@ El calendario activo abarca del 19 de agosto al 31 de diciembre de 2026. Las fec
 - **Amarillo:** más hormigueo o rigidez residual; reducir el volumen un 25–50 % durante 2–3 días.
 - **Rojo:** adormecimiento constante, irradiación nueva o debilidad; detener la progresión y consultar.
 
-Los estiramientos y la movilidad se incorporan directamente al checklist de cada día según la sesión. El plan evita estiramiento neural, flexión lumbar profunda y cualquier movimiento que lleve los síntomas más lejos hacia el pie.
+El calendario incorpora la movilidad adecuada a cada sesión. La pestaña **Estiramientos** presenta cada ejercicio con su explicación, sin casillas de verificación. El plan evita estiramiento neural, flexión lumbar profunda y cualquier movimiento que lleve los síntomas más lejos hacia el pie.
 
 ### Viaje a Vietnam
 
@@ -52,14 +52,16 @@ La alimentación usa un ciclo de 15 días con una sola receta compartida y racio
 - La pareja utiliza una ración de mantenimiento, sin copiar la reducción del usuario.
 - Cada comida muestra con quién se comparte y el editor permite modificar tanto el plato como ese contexto.
 - El ciclo prioriza alimentos frescos, verduras, legumbres, cereales integrales, pescado, huevos y carnes magras, con control de sodio por la hipertensión.
+- La pestaña de alimentación no tiene un checklist propio; el cumplimiento del menú se registra una sola vez desde **Seguimiento diario**.
 
 ## Funciones
 
-- Checklist diario de ejercicio, movilidad, estiramientos y revisión S1 a 24 horas.
+- Checklist diario del planning de ejercicio, movilidad y revisión S1 a 24 horas.
+- Catálogo de estiramientos con instrucciones, sin checklist independiente.
 - Registro de peso, tensión arterial, pulso, sueño, agua, dolor, medicación y cumplimiento diario del menú/dieta.
 - Seguimiento de parestesia S1, adormecimiento, debilidad y semáforo diario.
-- Gráficas de peso, dolor, parestesia, tensión, sueño, agua, adherencia a la dieta y cumplimiento.
-- Menú familiar de 15 días, raciones adaptadas y checklist de alimentación.
+- Gráficas de peso, dolor, parestesia, tensión, sueño, agua, adherencia a la dieta y cumplimiento del ejercicio. Cuidado personal se conserva como registro, sin gráfico estadístico.
+- Menú familiar de 15 días y raciones adaptadas; su cumplimiento se registra en el seguimiento diario.
 - Cuidado personal y diario de notas.
 - Configuración de dieta, movilidad y cuidados.
 - Sincronización del progreso mediante Dropbox.
@@ -100,7 +102,6 @@ Archivos principales:
 Los datos se guardan en el navegador. Las claves principales son:
 
 - `lumbar-plan-state`: marcas del calendario de ejercicio.
-- `diet-state` y `stretch-state`: progreso de alimentación y movilidad.
 - `health-log`: constantes y seguimiento neurológico.
 - `care-log`: cuidado personal.
 - `notes-log`: diario.

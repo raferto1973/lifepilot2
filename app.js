@@ -190,15 +190,15 @@ const PHASES = {
 };
 
 const PHASE_RANGES = [
-  {phase:1, start:0,  end:9},
-  {phase:2, start:10, end:31},
-  {phase:3, start:32, end:49},
-  {phase:4, start:50, end:73},
-  {phase:5, start:74, end:103},
-  {phase:6, start:104, end:134}
+  {phase:1, start:0,  end:4},
+  {phase:2, start:5,  end:26},
+  {phase:3, start:27, end:44},
+  {phase:4, start:45, end:68},
+  {phase:5, start:69, end:98},
+  {phase:6, start:99, end:129}
 ];
 
-const START = new Date(2026,7,19);
+const START = new Date(2026,7,24);
 const END = new Date(2026,11,31);
 const TOTAL_DAYS = Math.round((END-START)/86400000)+1;
 const TODAY = new Date();
@@ -402,24 +402,6 @@ function renderDiet(){
   if(tbody) {
     tbody.innerHTML = DIET_MENU.map(d => `<tr><td>${d.day}</td><td>${d.breakfast}</td><td>${d.lunch}<span class="meal-for">${d.lunchWith || ''}</span></td><td>${d.dinner}<span class="meal-for">${d.dinnerWith || ''}</span></td></tr>`).join('');
   }
-
-  const el=document.getElementById('diet-week');
-  const state=loadState('diet-state');
-  let html = '<div class="card"><p><strong>Marca los días que has seguido el menú</strong></p>';
-  DIET_MENU.forEach((d,i)=>{
-    const key=`family15_dia_${i}`;
-    const checked = state[key] ? 'checked' : '';
-    html += `<div class="meal-check"><input type="checkbox" id="diet_${i}" data-key="${key}" ${checked}><label for="diet_${i}">${d.day}</label></div>`;
-  });
-  html += '</div>';
-  el.innerHTML = html;
-  el.querySelectorAll('input').forEach(cb=>{
-    cb.addEventListener('change',()=>{
-      const st=loadState('diet-state');
-      if(cb.checked) st[cb.dataset.key]=true; else delete st[cb.dataset.key];
-      saveState('diet-state', st);
-    });
-  });
 }
 
 /* ---------- ESTIRAMIENTOS ---------- */
@@ -439,25 +421,9 @@ if(localStorage.getItem('cfg-stretches-version') !== STRETCH_PLAN_VERSION || !Ar
 
 function renderStretches(){
   const el=document.getElementById('stretch-list');
-  const state=loadState('stretch-state');
-  let html='';
-  STRETCHES.forEach((s,i)=>{
-    const [name,detail]=s;
-    const key=`st_${i}`;
-    const checked = state[key] ? 'checked' : '';
-    const doneClass = state[key] ? ' done' : '';
-    html += `<div class="ex${doneClass}"><input type="checkbox" id="stretch_${i}" data-key="${key}" ${checked}>
-      <label for="stretch_${i}"><span class="exname">${name}</span><span class="exdetail">${detail}</span></label></div>`;
-  });
-  el.innerHTML=html;
-  el.querySelectorAll('input').forEach(cb=>{
-    cb.addEventListener('change',()=>{
-      const st=loadState('stretch-state');
-      if(cb.checked) st[cb.dataset.key]=true; else delete st[cb.dataset.key];
-      saveState('stretch-state', st);
-      cb.closest('.ex').classList.toggle('done', cb.checked);
-    });
-  });
+  el.innerHTML=STRETCHES.map(([name,detail])=>
+    `<div class="ex"><div><span class="exname">${name}</span><span class="exdetail">${detail}</span></div></div>`
+  ).join('');
 }
 
 /* ---------- SEGUIMIENTO DIARIO ---------- */
@@ -609,7 +575,7 @@ document.getElementById('n-save').addEventListener('click',()=>{
 });
 
 /* ---------- SINCRONIZAR ENTRE DISPOSITIVOS ---------- */
-const DATA_KEYS = ['lumbar-plan-state','diet-state','stretch-state','health-log','care-log','notes-log'];
+const DATA_KEYS = ['lumbar-plan-state','health-log','care-log','notes-log'];
 
 // Funciones de exportación locales eliminadas en favor de Dropbox
 
@@ -750,33 +716,6 @@ function renderEstadisticas() {
     }
   });
 
-  // Calculate Care Compliance
-  const stCare = loadState('care-log');
-  let totalCare = 0;
-  let doneCare = 0;
-  Object.keys(stCare).forEach(dt => {
-    const entry = stCare[dt];
-    CARE_ITEMS.forEach(([id]) => {
-      totalCare++;
-      if(entry[id]) doneCare++;
-    });
-  });
-  const pctCare = totalCare === 0 ? 0 : Math.round((doneCare/totalCare)*100);
-
-  initOrUpdateChart('chart-cuidado', {
-    type: 'doughnut',
-    data: {
-      labels: ['Completado', 'Omitido'],
-      datasets: [{
-        data: [doneCare, Math.max(0, totalCare - doneCare)],
-        backgroundColor: ['#85b7eb', '#e0e0e0']
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { title: { display: true, text: pctCare + '% de Cumplimiento' } }
-    }
-  });
 }
 
 /* ---------- TABS ---------- */
