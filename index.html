@@ -15,27 +15,27 @@
 </head>
 <body>
 <div class="wrap">
-  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 6px; flex-wrap:wrap; gap:10px;">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <img src="icon_64x64.png" alt="Life Pilot Icon" style="width: 42px; height: 42px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-      <h1 style="margin: 0; font-size: 22px;">Life Pilot</h1>
+  <div class="app-header">
+    <div class="app-brand">
+      <img class="app-icon" src="icon_64x64.png" alt="Life Pilot">
+      <h1 class="app-title">Life Pilot</h1>
     </div>
-    <div style="display:flex; gap:8px;">
-      <button class="reset" id="pwa-install-btn" style="display:none; color:var(--border-accent); border-color:var(--border-accent)"><i class="ti ti-device-mobile" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Instalar App</button>
-      <button class="reset" id="settings-btn"><i class="ti ti-adjustments" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>Ajustes</button>
+    <div class="header-actions">
+      <button class="reset accent-action initially-hidden" id="pwa-install-btn"><i class="ti ti-device-mobile button-icon" aria-hidden="true"></i>Instalar App</button>
+      <button class="reset" id="settings-btn"><i class="ti ti-adjustments button-icon" aria-hidden="true"></i>Ajustes</button>
     </div>
   </div>
-  <p class="sub" style="margin-top: 0;">Plan actualizado L5-S1/S1 &middot; 24 agosto &ndash; 31 diciembre 2026</p>
+  <p class="sub">Plan actualizado L5-S1/S1 &middot; 24 agosto &ndash; 31 diciembre 2026</p>
 
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-    <div style="flex:1;min-width:220px">
-      <p style="margin:0">Tus cambios se guardan automáticamente en Dropbox cuando la cuenta está conectada.</p>
+  <div class="card sync-card">
+    <div class="sync-copy">
+      <p class="no-margin">Tus cambios se guardan automáticamente en Dropbox cuando la cuenta está conectada.</p>
       <span id="dbx-sync-status" class="sync-status disconnected" role="status" aria-live="polite"><i class="ti ti-cloud-off"></i> Sin conectar</span>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="reset" id="dbx-login-btn"><i class="ti ti-brand-dropbox" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Conectar Dropbox</button>
-      <button class="reset" id="dbx-load-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Sincronizar ahora</button>
-      <button class="reset" id="dbx-save-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-cloud-upload" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Guardar ahora</button>
+    <div class="sync-actions">
+      <button class="reset" id="dbx-login-btn"><i class="ti ti-brand-dropbox button-icon-small" aria-hidden="true"></i>Conectar Dropbox</button>
+      <button class="reset accent-action initially-hidden" id="dbx-load-btn"><i class="ti ti-refresh button-icon-small" aria-hidden="true"></i>Sincronizar ahora</button>
+      <button class="reset accent-action initially-hidden" id="dbx-save-btn"><i class="ti ti-cloud-upload button-icon-small" aria-hidden="true"></i>Guardar ahora</button>
     </div>
   </div>
 
@@ -101,7 +101,7 @@
 
     <div class="top-bar">
       <div class="progress-pill">Progreso ejercicios: <b id="progress-text">0 / 0</b></div>
-      <button class="reset" id="reset-btn"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Reiniciar marcas</button>
+      <button class="reset" id="reset-btn"><i class="ti ti-refresh button-icon-small" aria-hidden="true"></i>Reiniciar marcas</button>
     </div>
     <div id="weeks"></div>
   </div>
@@ -138,7 +138,7 @@
         <tbody id="diet-menu-body"></tbody>
       </table>
       </div>
-      <p style="margin-top:10px"><strong>Entre horas:</strong> para ti, fruta, yogur natural o una porción pequeña de frutos secos sin sal si hay hambre real. Tu hijo puede necesitar un complemento mayor alrededor del entrenamiento; tu pareja puede tomarlo según hambre, sin obligación.</p>
+      <p class="meal-note"><strong>Entre horas:</strong> para ti, fruta, yogur natural o una porción pequeña de frutos secos sin sal si hay hambre real. Tu hijo puede necesitar un complemento mayor alrededor del entrenamiento; tu pareja puede tomarlo según hambre, sin obligación.</p>
     </div>
 
   </div>
@@ -189,7 +189,7 @@
       <div class="chk-row"><input type="checkbox" id="h-dieta"><label for="h-dieta">He seguido el menú/dieta previsto hoy</label></div>
       <div class="chk-row danger-check"><input type="checkbox" id="h-adormecimiento"><label for="h-adormecimiento">Adormecimiento permanente hoy</label></div>
       <div class="chk-row danger-check"><input type="checkbox" id="h-debilidad"><label for="h-debilidad">Debilidad nueva en pantorrilla o pie</label></div>
-      <button class="save-btn" id="h-save" style="margin-top:10px">Guardar registro</button>
+      <button class="save-btn spaced-button" id="h-save">Guardar registro</button>
     </div>
     <div class="card">
       <p><strong>Historial</strong></p>
@@ -200,9 +200,9 @@
   <div id="tab-cuidado" class="tabpanel">
     <div class="card">
       <p><strong>Registro del día</strong></p>
-      <div class="field" style="max-width:220px;margin-bottom:12px"><label for="c-fecha">Fecha</label><input type="date" id="c-fecha"></div>
+      <div class="field compact-date-field"><label for="c-fecha">Fecha</label><input type="date" id="c-fecha"></div>
       <div id="care-checklist"></div>
-      <button class="save-btn" id="c-save" style="margin-top:10px">Guardar registro</button>
+      <button class="save-btn spaced-button" id="c-save">Guardar registro</button>
     </div>
     <div class="card">
       <p><strong>Historial</strong></p>
@@ -213,9 +213,9 @@
   <div id="tab-notas" class="tabpanel">
     <div class="card">
       <p><strong>Nota del día</strong></p>
-      <div class="field" style="max-width:220px;margin-bottom:12px"><label for="n-fecha">Fecha</label><input type="date" id="n-fecha"></div>
+      <div class="field compact-date-field"><label for="n-fecha">Fecha</label><input type="date" id="n-fecha"></div>
       <div class="field"><label for="n-texto">Sensaciones, dolor, cualquier tema médico u observación</label><textarea id="n-texto" placeholder="¿Cómo te has encontrado hoy?"></textarea></div>
-      <button class="save-btn" id="n-save" style="margin-top:10px">Guardar nota</button>
+      <button class="save-btn spaced-button" id="n-save">Guardar nota</button>
     </div>
     <div class="card">
       <p><strong>Notas anteriores</strong></p>
@@ -224,9 +224,9 @@
   </div>
 
   <div id="tab-estadisticas" class="tabpanel">
-    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px">
-      <strong>Rango de tiempo:</strong>
-      <select id="chart-filter" style="padding:6px; border-radius:6px; border:1px solid #ccc; font-family:inherit;">
+    <div class="card stats-filter-card">
+      <label for="chart-filter"><strong>Rango de tiempo:</strong></label>
+      <select id="chart-filter" class="chart-filter">
         <option value="7">Últimos 7 días</option>
         <option value="14">Últimos 14 días</option>
         <option value="30" selected>Últimos 30 días</option>
@@ -235,38 +235,38 @@
     </div>
     <div class="card">
       <p><strong>Evolución de Peso y Dolor Lumbar</strong></p>
-      <div style="position: relative; height:250px; width:100%">
+      <div class="chart-container chart-height-250">
         <canvas id="chart-peso-dolor"></canvas>
       </div>
     </div>
     <div class="card">
       <p><strong>Evolución neurológica S1</strong></p>
-      <div style="position: relative; height:220px; width:100%">
+      <div class="chart-container chart-height-220">
         <canvas id="chart-parestesia"></canvas>
       </div>
     </div>
     <div class="card">
       <p><strong>Tensión Arterial</strong></p>
-      <div style="position: relative; height:250px; width:100%">
+      <div class="chart-container chart-height-250">
         <canvas id="chart-tension"></canvas>
       </div>
     </div>
     <div class="card">
       <p><strong>Hábitos (Agua y Sueño)</strong></p>
-      <div style="position: relative; height:250px; width:100%">
+      <div class="chart-container chart-height-250">
         <canvas id="chart-habitos"></canvas>
       </div>
     </div>
     <div class="charts-grid">
       <div class="card">
-        <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Menú / dieta</strong></p>
-        <div style="position: relative; height:180px; width:100%">
+        <p class="chart-card-title"><strong>Menú / dieta</strong></p>
+        <div class="chart-container chart-height-180">
           <canvas id="chart-dieta-cumplimiento"></canvas>
         </div>
       </div>
       <div class="card">
-        <p style="text-align:center; font-size:14px; margin-bottom:5px;"><strong>Ejercicio</strong></p>
-        <div style="position: relative; height:180px; width:100%">
+        <p class="chart-card-title"><strong>Ejercicio</strong></p>
+        <div class="chart-container chart-height-180">
           <canvas id="chart-ejercicio-cumplimiento"></canvas>
         </div>
       </div>
@@ -286,30 +286,30 @@
 
 <!-- --- SETTINGS MODAL --- -->
 <div id="settings-modal" class="modal-overlay">
-  <div class="modal" style="max-height:85vh; overflow-y:auto; width:95%; max-width:600px;">
-    <h3 style="display:flex; justify-content:space-between; align-items:center;">
+  <div class="modal settings-modal-content">
+    <h3 class="settings-modal-title">
       Ajustes de la App
-      <button class="reset" onclick="document.getElementById('settings-modal').classList.remove('active')"><i class="ti ti-x" style="font-size:20px;"></i></button>
+      <button class="reset icon-only-button" aria-label="Cerrar ajustes" title="Cerrar ajustes" onclick="document.getElementById('settings-modal').classList.remove('active')"><i class="ti ti-x" aria-hidden="true"></i></button>
     </h3>
     
-    <div style="margin-bottom:20px;">
-      <h4 style="margin-bottom:8px; color:var(--border-accent)">Menú de Dieta</h4>
-      <div id="settings-diet-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <div class="settings-group">
+      <h4 class="settings-group-title">Menú de Dieta</h4>
+      <div id="settings-diet-list" class="settings-list"></div>
     </div>
     
-    <div style="margin-bottom:20px;">
-      <h4 style="margin-bottom:8px; color:var(--border-accent)">Estiramientos</h4>
-      <div id="settings-stretches-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px;"></div>
+    <div class="settings-group">
+      <h4 class="settings-group-title">Estiramientos</h4>
+      <div id="settings-stretches-list" class="settings-list settings-list-spaced"></div>
       <button class="modal-btn" onclick="addStretchRow()">+ Añadir Estiramiento</button>
     </div>
     
-    <div style="margin-bottom:20px;">
-      <h4 style="margin-bottom:8px; color:var(--border-accent)">Cuidado Personal</h4>
-      <div id="settings-care-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px;"></div>
+    <div class="settings-group">
+      <h4 class="settings-group-title">Cuidado Personal</h4>
+      <div id="settings-care-list" class="settings-list settings-list-spaced"></div>
       <button class="modal-btn" onclick="addCareRow()">+ Añadir Tarea</button>
     </div>
     
-    <button class="modal-btn ok" onclick="saveSettings()" style="width:100%; margin-top:10px;">Guardar Cambios</button>
+    <button class="modal-btn ok settings-save-button" onclick="saveSettings()">Guardar Cambios</button>
   </div>
 </div>
 

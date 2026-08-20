@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifepilot-v12-auto-dropbox-connect';
+const CACHE_NAME = 'lifepilot-v13-accessibility';
 const urlsToCache = [
   './index.html',
   './style.css',

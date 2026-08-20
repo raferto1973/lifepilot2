@@ -17,6 +17,18 @@
   h1{font-size:19px;font-weight:600;margin:0 0 4px}
   h2{font-size:16px;font-weight:600;margin:2rem 0 .75rem}
   .sub{font-size:13px;color:var(--text-secondary);margin:0 0 1.5rem}
+  .app-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap;gap:10px}
+  .app-brand{display:flex;align-items:center;gap:12px}
+  .app-icon{width:42px;height:42px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+  .app-title{margin:0;font-size:22px}
+  .header-actions,.sync-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .sync-card{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .sync-copy{flex:1;min-width:220px}
+  .no-margin{margin:0!important}
+  .initially-hidden{display:none}
+  button.reset.accent-action{color:var(--border-accent);border-color:var(--border-accent)}
+  .button-icon,.button-icon-small{vertical-align:-2px;margin-right:4px}
+  .button-icon{font-size:14px}.button-icon-small{font-size:13px}
   .tabs{display:flex;gap:8px;margin-bottom:1.25rem}
   .tab-btn{background:var(--surface-1);border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;
     font-size:13px;cursor:pointer;color:var(--text-secondary)}
@@ -68,6 +80,7 @@
   table.menu th{color:var(--text-secondary);font-weight:600;font-size:12px}
   table.menu{min-width:780px}
   .meal-for{display:block;margin-top:5px;color:var(--border-accent);font-size:11px;font-weight:600}
+  .meal-note{margin-top:10px!important}
   .diet-intro{border-left:4px solid var(--border-accent)}
   .portion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
   .portion-card{background:var(--surface-1);border:1px solid var(--border);border-top-width:4px;border-radius:10px;padding:11px 12px;font-size:12px}
@@ -85,6 +98,8 @@
   .save-btn{background:var(--border-accent);color:#fff;border:none;border-radius:var(--radius);
     padding:8px 18px;font-size:13px;cursor:pointer;font-weight:600}
   .save-btn:hover{opacity:.9}
+  .spaced-button{margin-top:10px}
+  .compact-date-field{max-width:220px;margin-bottom:12px}
   table.hist{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:1rem}
   table.hist th, table.hist td{border-bottom:0.5px solid var(--border);text-align:left;padding:6px 8px}
   table.hist th{color:var(--text-secondary);font-weight:600;font-size:11px}
@@ -121,6 +136,11 @@
   .status-dot{display:inline-block;border-radius:10px;padding:1px 7px;font-size:11px;text-transform:capitalize;white-space:nowrap}
   .status-dot.verde{background:#d9f5e8;color:#075f41}.status-dot.amarillo{background:#fff0c2;color:#7a4800}.status-dot.rojo{background:#fde1e1;color:#8f2424}
   .alert-cell{color:var(--text-danger);font-weight:600;white-space:nowrap}
+  .stats-filter-card{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+  .chart-filter{padding:6px;border-radius:6px;border:1px solid var(--border);font-family:inherit;background:var(--surface-1);color:var(--text-primary)}
+  .chart-container{position:relative;width:100%}
+  .chart-height-250{height:250px}.chart-height-220{height:220px}.chart-height-180{height:180px}
+  .chart-card-title{text-align:center;font-size:14px!important;margin-bottom:5px!important}
 
   @media (max-width:600px){
     body{padding:1rem .75rem 3rem}
@@ -160,7 +180,14 @@
   .modal-btn.cancel { background:var(--surface-0); color:var(--text); }
   .modal-btn.ok { background:var(--border-accent); color:#fff; }
   .modal-btn.danger { background:#a32d2d; color:#fff; }
-  .modal-btn.danger { background:#a32d2d; color:#fff; }
+  .settings-modal-content{max-height:85vh;overflow-y:auto;width:95%;max-width:600px}
+  .settings-modal-title{display:flex;justify-content:space-between;align-items:center}
+  .icon-only-button{font-size:20px!important;line-height:1}
+  .settings-group{margin-bottom:20px}
+  .settings-group-title{margin-bottom:8px;color:var(--border-accent)}
+  .settings-list{display:flex;flex-direction:column;gap:10px}
+  .settings-list-spaced{margin-bottom:10px}
+  .settings-save-button{width:100%;margin-top:10px}
   
   /* Ajustes UI */
   .settings-section { background: var(--surface-0); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
