@@ -798,6 +798,8 @@ const CLIENT_ID = 'tn0qzpzapx2b1mw';
 const DROPBOX_FILE = '/plan_lumbar_datos.json';
 const DROPBOX_SESSION_KEY = 'lifepilot-dropbox-session';
 const DROPBOX_PKCE_KEY = 'lifepilot-dropbox-pkce';
+const DROPBOX_AUTO_ATTEMPT_KEY = 'lifepilot-dropbox-auto-attempt';
+const DROPBOX_AUTO_RETRY_DELAY = 120000;
 const AUTO_SYNC_DELAY = 3000;
 let dbx = null;
 let syncTimer = null;
@@ -1121,12 +1123,12 @@ function cleanOAuthParams() {
   history.replaceState(null, document.title, url.pathname + (url.search ? url.search : '') + url.hash);
 }
 
-async function connectDropbox() {
+async function connectDropbox({ automatic=false }={}) {
   if(window.location.protocol === 'file:') {
-    showAlert('Abre Life Pilot mediante http://localhost o desde Vercel para conectar Dropbox.');
+    if(!automatic) showAlert('Abre Life Pilot mediante http://localhost o desde Vercel para conectar Dropbox.');
     return;
   }
-  setSyncStatus('connecting', 'Abriendo Dropbox…');
+  setSyncStatus('connecting', automatic ? 'Conectando automáticamente…' : 'Abriendo Dropbox…');
   const auth = new Dropbox.DropboxAuth({ clientId: CLIENT_ID });
   const redirectUri = `${window.location.origin}${window.location.pathname}`;
   const state = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
@@ -1135,10 +1137,21 @@ async function connectDropbox() {
     sessionStorage.setItem(DROPBOX_PKCE_KEY, JSON.stringify({
       verifier: auth.getCodeVerifier(), state, redirectUri
     }));
+    sessionStorage.setItem(DROPBOX_AUTO_ATTEMPT_KEY, String(Date.now()));
     window.location.assign(authUrl);
   } catch(err) {
-    handleSyncError(err, true);
+    handleSyncError(err, !automatic);
   }
+}
+
+async function tryAutomaticDropboxConnection() {
+  if(dbx || !navigator.onLine || window.location.protocol === 'file:') return;
+  const lastAttempt = Number(sessionStorage.getItem(DROPBOX_AUTO_ATTEMPT_KEY) || 0);
+  if(lastAttempt && Date.now() - lastAttempt < DROPBOX_AUTO_RETRY_DELAY) {
+    setDropboxConnected(false);
+    return;
+  }
+  await connectDropbox({ automatic: true });
 }
 
 async function restoreDropboxSession() {
@@ -1202,18 +1215,23 @@ async function restoreDropboxSession() {
     } else {
       sessionStorage.removeItem(DROPBOX_SESSION_KEY);
       setDropboxConnected(false);
+      await tryAutomaticDropboxConnection();
     }
   } catch(err) {
     clearDropboxSession();
+    await tryAutomaticDropboxConnection();
   }
 }
 
 ensureSyncMetadata();
-document.getElementById('dbx-login-btn').addEventListener('click', connectDropbox);
+document.getElementById('dbx-login-btn').addEventListener('click', () => connectDropbox());
 document.getElementById('dbx-load-btn').addEventListener('click', () => syncNow({ notify: true }));
 document.getElementById('dbx-save-btn').addEventListener('click', () => syncNow({ notify: true, uploadOnly: true }));
 window.addEventListener('lifepilot:data-changed', () => scheduleAutoSync());
-window.addEventListener('online', () => scheduleAutoSync(250));
+window.addEventListener('online', () => {
+  if(dbx) scheduleAutoSync(250);
+  else tryAutomaticDropboxConnection();
+});
 window.addEventListener('offline', () => {
   if(dbx) setSyncStatus('offline', 'Sin conexión · pendiente');
 });

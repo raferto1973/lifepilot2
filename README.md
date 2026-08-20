@@ -109,7 +109,7 @@ Los datos se guardan en el navegador. Las claves principales son:
 
 Dropbox sincroniza las claves configuradas en `DATA_KEYS`, incluido el progreso, los registros y la configuración personalizada. El guardado local es inmediato y, cuando hay una sesión activa, los cambios se envían automáticamente tras 3 segundos sin actividad. Al abrir la app se comparan las marcas de tiempo locales y remotas; la revisión `rev` de Dropbox impide sobrescribir cambios concurrentes de otro dispositivo.
 
-La autenticación utiliza OAuth 2.0 con PKCE y un token de corta duración guardado sólo en `sessionStorage`. No se incluye ningún secreto de Dropbox en el navegador. Al caducar la sesión hay que volver a pulsar **Conectar Dropbox**. Para probar la conexión en local, la URL exacta `http://localhost:8000/` debe figurar entre los **Redirect URIs** de la aplicación en Dropbox; la URL de producción debe estar registrada del mismo modo.
+La autenticación utiliza OAuth 2.0 con PKCE y un token de corta duración guardado sólo en `sessionStorage`. No se incluye ningún secreto de Dropbox en el navegador. Al abrir la app sin una sesión válida se inicia automáticamente la autorización de Dropbox; una espera de seguridad evita bucles si se cancela o falla. Para probar la conexión en local, la URL exacta `http://localhost:8000/` debe figurar entre los **Redirect URIs** de la aplicación en Dropbox; la URL de producción debe estar registrada del mismo modo.
 
 Los botones **Sincronizar ahora** y **Guardar ahora** se conservan como respaldo. Sin Internet, los cambios permanecen en `localStorage` y se reintentan al recuperar la conexión. No se debe incluir información clínica sensible si la cuenta o el dispositivo no están adecuadamente protegidos.
 
