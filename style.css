@@ -29,6 +29,10 @@
   button.reset{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius);
     padding:6px 12px;font-size:12px;color:var(--text-secondary);cursor:pointer}
   button.reset:hover{background:var(--surface-1)}
+  .sync-status{display:inline-flex;align-items:center;gap:4px;margin-top:7px;padding:2px 8px;border-radius:10px;
+    background:var(--surface-0);color:var(--text-secondary);font-size:11px;font-weight:600}
+  .sync-status.syncing{color:#3b82c4}.sync-status.synced{color:var(--border-accent)}
+  .sync-status.offline,.sync-status.error,.sync-status.conflict{color:var(--text-danger)}
   .week{margin-bottom:14px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface-1)}
   .week-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;user-select:none}
   .week-head .wtitle{font-size:14px;font-weight:600}

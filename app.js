@@ -2,7 +2,11 @@
 function showAlert(msg) {
   const modal = document.getElementById('custom-modal');
   document.getElementById('modal-title').innerText = 'Life Pilot';
-  document.getElementById('modal-body').innerHTML = `<p>${msg}</p>`;
+  const body = document.getElementById('modal-body');
+  body.innerHTML = '';
+  const paragraph = document.createElement('p');
+  paragraph.textContent = msg;
+  body.appendChild(paragraph);
   document.getElementById('modal-actions').innerHTML = `<button class="modal-btn ok" onclick="closeModal()">OK</button>`;
   modal.classList.add('active');
 }
@@ -245,8 +249,55 @@ function buildWeekdays(){
   return days;
 }
 
+const SYNC_META_KEY = 'lifepilot-sync-meta';
+const ITEMIZED_DATA_KEYS = ['lumbar-plan-state', 'health-log', 'care-log', 'notes-log'];
+
 function loadState(k){ try{return JSON.parse(localStorage.getItem(k)||'{}');}catch(e){return {};} }
-function saveState(k,state){ try{localStorage.setItem(k, JSON.stringify(state));}catch(e){} }
+function loadSyncMeta(){
+  try {
+    return JSON.parse(localStorage.getItem(SYNC_META_KEY) || '{}');
+  } catch(e) {
+    return {};
+  }
+}
+function storeSyncMeta(meta){
+  try { localStorage.setItem(SYNC_META_KEY, JSON.stringify(meta)); } catch(e) {}
+}
+function markStateChanged(key, previousState, nextState){
+  const meta = loadSyncMeta();
+  const now = new Date().toISOString();
+  meta.keyUpdatedAt = meta.keyUpdatedAt || {};
+  meta.keyUpdatedAt[key] = now;
+  if(ITEMIZED_DATA_KEYS.includes(key) && previousState && nextState &&
+      typeof previousState === 'object' && typeof nextState === 'object') {
+    meta.itemUpdatedAt = meta.itemUpdatedAt || {};
+    meta.tombstones = meta.tombstones || {};
+    meta.itemUpdatedAt[key] = meta.itemUpdatedAt[key] || {};
+    meta.tombstones[key] = meta.tombstones[key] || {};
+    const itemIds = new Set([...Object.keys(previousState), ...Object.keys(nextState)]);
+    itemIds.forEach(itemId => {
+      if(JSON.stringify(previousState[itemId]) === JSON.stringify(nextState[itemId])) return;
+      meta.itemUpdatedAt[key][itemId] = now;
+      if(Object.prototype.hasOwnProperty.call(nextState, itemId)) {
+        delete meta.tombstones[key][itemId];
+      } else {
+        meta.tombstones[key][itemId] = now;
+      }
+    });
+  }
+  meta.updatedAt = now;
+  meta.changeVersion = (meta.changeVersion || 0) + 1;
+  meta.dirty = true;
+  storeSyncMeta(meta);
+  window.dispatchEvent(new CustomEvent('lifepilot:data-changed', { detail: { key } }));
+}
+function saveState(k,state,options={}){
+  try {
+    const previousState = loadState(k);
+    localStorage.setItem(k, JSON.stringify(state));
+    if(!options.fromSync) markStateChanged(k, previousState, state);
+  } catch(e) {}
+}
 
 function groupByWeek(days){
   const weeks=[];
@@ -366,7 +417,7 @@ function updateExProgress(){
 
 document.getElementById('reset-btn').addEventListener('click',()=>{
   if(confirm('¿Borrar todas las marcas de progreso de ejercicio?')){
-    localStorage.removeItem('lumbar-plan-state');
+    saveState('lumbar-plan-state', {});
     renderExercise();
   }
 });
@@ -393,7 +444,7 @@ const DIET_PLAN_VERSION = 'family-15-v1';
 let DIET_MENU = loadState('cfg-diet');
 if(localStorage.getItem('cfg-diet-version') !== DIET_PLAN_VERSION || !Array.isArray(DIET_MENU) || DIET_MENU.length !== 15) {
   DIET_MENU = DEFAULT_DIET_MENU;
-  saveState('cfg-diet', DIET_MENU);
+  saveState('cfg-diet', DIET_MENU, { fromSync: true });
   localStorage.setItem('cfg-diet-version', DIET_PLAN_VERSION);
 }
 
@@ -415,7 +466,7 @@ const STRETCH_PLAN_VERSION = 's1-v2';
 let STRETCHES = loadState('cfg-stretches');
 if(localStorage.getItem('cfg-stretches-version') !== STRETCH_PLAN_VERSION || !Array.isArray(STRETCHES) || STRETCHES.length === 0) {
   STRETCHES = DEFAULT_STRETCHES;
-  saveState('cfg-stretches', STRETCHES);
+  saveState('cfg-stretches', STRETCHES, { fromSync: true });
   localStorage.setItem('cfg-stretches-version', STRETCH_PLAN_VERSION);
 }
 
@@ -575,7 +626,10 @@ document.getElementById('n-save').addEventListener('click',()=>{
 });
 
 /* ---------- SINCRONIZAR ENTRE DISPOSITIVOS ---------- */
-const DATA_KEYS = ['lumbar-plan-state','health-log','care-log','notes-log'];
+const DATA_KEYS = [
+  'lumbar-plan-state', 'health-log', 'care-log', 'notes-log',
+  'cfg-diet', 'cfg-stretches', 'cfg-care'
+];
 
 // Funciones de exportación locales eliminadas en favor de Dropbox
 
@@ -741,64 +795,432 @@ renderEstadisticas();
 
 /* ---------- DROPBOX SYNC ---------- */
 const CLIENT_ID = 'tn0qzpzapx2b1mw';
+const DROPBOX_FILE = '/plan_lumbar_datos.json';
+const DROPBOX_SESSION_KEY = 'lifepilot-dropbox-session';
+const DROPBOX_PKCE_KEY = 'lifepilot-dropbox-pkce';
+const AUTO_SYNC_DELAY = 3000;
 let dbx = null;
+let syncTimer = null;
+let syncInProgress = false;
+let syncPending = false;
 
-document.getElementById('dbx-login-btn').addEventListener('click', () => {
-  const dbxAuth = new Dropbox.DropboxAuth({ clientId: CLIENT_ID });
-  let redirectUri = window.location.href.split('#')[0].split('?')[0];
-  const authUrl = dbxAuth.getAuthenticationUrl(redirectUri, undefined, 'token');
-  authUrl.then(url => { window.location.href = url; });
-});
+function setSyncStatus(kind, text) {
+  const el = document.getElementById('dbx-sync-status');
+  const icons = {
+    disconnected: 'ti-cloud-off', connecting: 'ti-loader-2', syncing: 'ti-refresh',
+    synced: 'ti-cloud-check', offline: 'ti-wifi-off', conflict: 'ti-arrows-exchange', error: 'ti-alert-circle'
+  };
+  el.className = `sync-status ${kind}`;
+  el.innerHTML = `<i class="ti ${icons[kind] || 'ti-cloud'}"></i> ${text}`;
+}
 
-if (window.location.hash.includes('access_token')) {
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const token = params.get('access_token');
-  if(token){
-    dbx = new Dropbox.Dropbox({ accessToken: token });
-    document.getElementById('dbx-login-btn').style.display = 'none';
-    document.getElementById('dbx-load-btn').style.display = 'inline-block';
-    document.getElementById('dbx-save-btn').style.display = 'inline-block';
-    history.replaceState(null, null, window.location.pathname + window.location.search);
+function setDropboxConnected(connected) {
+  document.getElementById('dbx-login-btn').style.display = connected ? 'none' : 'inline-block';
+  document.getElementById('dbx-load-btn').style.display = connected ? 'inline-block' : 'none';
+  document.getElementById('dbx-save-btn').style.display = connected ? 'inline-block' : 'none';
+  if(!connected) setSyncStatus('disconnected', 'Sin conectar');
+}
+
+function ensureSyncMetadata() {
+  const meta = loadSyncMeta();
+  const now = new Date().toISOString();
+  meta.keyUpdatedAt = meta.keyUpdatedAt || {};
+  meta.itemUpdatedAt = meta.itemUpdatedAt || {};
+  meta.tombstones = meta.tombstones || {};
+  let migrated = false;
+  DATA_KEYS.forEach(key => {
+    const value = loadState(key);
+    const isDefaultConfig =
+      (key === 'cfg-diet' && JSON.stringify(value) === JSON.stringify(DEFAULT_DIET_MENU)) ||
+      (key === 'cfg-stretches' && JSON.stringify(value) === JSON.stringify(DEFAULT_STRETCHES)) ||
+      (key === 'cfg-care' && JSON.stringify(value) === JSON.stringify(DEFAULT_CARE_ITEMS));
+    if(localStorage.getItem(key) !== null && !meta.keyUpdatedAt[key] && !isDefaultConfig) {
+      meta.keyUpdatedAt[key] = now;
+      migrated = true;
+    }
+    if(ITEMIZED_DATA_KEYS.includes(key)) {
+      meta.itemUpdatedAt[key] = meta.itemUpdatedAt[key] || {};
+      meta.tombstones[key] = meta.tombstones[key] || {};
+      if(value && typeof value === 'object') {
+        Object.keys(value).forEach(itemId => {
+          if(!meta.itemUpdatedAt[key][itemId]) {
+            meta.itemUpdatedAt[key][itemId] = meta.keyUpdatedAt[key] || now;
+            migrated = true;
+          }
+        });
+      }
+    }
+  });
+  if(!meta.deviceId) {
+    meta.deviceId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+    migrated = true;
+  }
+  if(migrated) {
+    meta.updatedAt = now;
+    meta.dirty = true;
+    storeSyncMeta(meta);
   }
 }
 
-document.getElementById('dbx-save-btn').addEventListener('click', () => {
-  if(!dbx) return;
-  const bundle = {};
-  DATA_KEYS.forEach(k => { bundle[k] = loadState(k); });
-  bundle._exportado = new Date().toISOString();
-  const file = new Blob([JSON.stringify(bundle)], { type: 'application/json' });
-  dbx.filesUpload({ path: '/plan_lumbar_datos.json', contents: file, mode: 'overwrite' })
-    .then(() => showAlert('Datos guardados en Dropbox correctamente.'))
-    .catch(err => { console.error(err); showAlert('Error al guardar en Dropbox.'); });
-});
+function hasData(value) {
+  if(Array.isArray(value)) return value.length > 0;
+  if(value && typeof value === 'object') return Object.keys(value).length > 0;
+  return value !== undefined && value !== null && value !== '';
+}
 
-document.getElementById('dbx-load-btn').addEventListener('click', () => {
-  if(!dbx) return;
-  dbx.filesDownload({ path: '/plan_lumbar_datos.json' })
-    .then(res => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const bundle = JSON.parse(reader.result);
-          DATA_KEYS.forEach(k => {
-            if (bundle[k]) saveState(k, bundle[k]);
-          });
-          renderExercise(); renderDiet(); renderStretches(); renderHealth(); renderCare(); renderNotes(); renderEstadisticas();
-          showAlert('Datos cargados de Dropbox correctamente.');
-        } catch(e) {
-          showAlert('Error al procesar el archivo descargado.');
+function reloadSyncedUI() {
+  const storedDiet = loadState('cfg-diet');
+  const storedStretches = loadState('cfg-stretches');
+  const storedCare = loadState('cfg-care');
+  if(Array.isArray(storedDiet) && storedDiet.length) DIET_MENU = storedDiet;
+  if(Array.isArray(storedStretches) && storedStretches.length) STRETCHES = storedStretches;
+  if(Array.isArray(storedCare)) CARE_ITEMS = storedCare;
+  renderExercise(); renderDiet(); renderStretches(); renderHealth(); renderCare(); renderNotes(); renderEstadisticas();
+}
+
+function makeSyncBundle() {
+  const meta = loadSyncMeta();
+  const data = {};
+  DATA_KEYS.forEach(key => { data[key] = loadState(key); });
+  return {
+    schemaVersion: 2,
+    app: 'Life Pilot',
+    updatedAt: meta.updatedAt || new Date().toISOString(),
+    deviceId: meta.deviceId,
+    changeVersion: meta.changeVersion || 0,
+    keyUpdatedAt: meta.keyUpdatedAt || {},
+    itemUpdatedAt: meta.itemUpdatedAt || {},
+    tombstones: meta.tombstones || {},
+    data
+  };
+}
+
+function readBlobAsText(blob) {
+  if(blob && typeof blob.text === 'function') return blob.text();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(blob);
+  });
+}
+
+function applyRemoteBundle(bundle, remoteRevision, remoteModified) {
+  const remoteData = bundle.data && typeof bundle.data === 'object' ? bundle.data : bundle;
+  const remoteTimes = bundle.keyUpdatedAt || {};
+  const remoteItemTimes = bundle.itemUpdatedAt || {};
+  const remoteTombstones = bundle.tombstones || {};
+  const remoteFallback = bundle.updatedAt || bundle._exportado || remoteModified || '';
+  const meta = loadSyncMeta();
+  meta.keyUpdatedAt = meta.keyUpdatedAt || {};
+  meta.itemUpdatedAt = meta.itemUpdatedAt || {};
+  meta.tombstones = meta.tombstones || {};
+  let needsUpload = false;
+  let changedLocal = false;
+
+  DATA_KEYS.forEach(key => {
+    const hasRemoteKey = Object.prototype.hasOwnProperty.call(remoteData, key);
+    const localValue = loadState(key);
+    const remoteValue = remoteData[key];
+    const localTime = meta.keyUpdatedAt[key] || '';
+    const remoteTime = remoteTimes[key] || remoteFallback;
+
+    if(!hasRemoteKey) {
+      if(hasData(localValue)) needsUpload = true;
+      return;
+    }
+
+    if(ITEMIZED_DATA_KEYS.includes(key) && localValue && remoteValue &&
+        typeof localValue === 'object' && typeof remoteValue === 'object') {
+      const merged = { ...localValue };
+      const localItemTimes = meta.itemUpdatedAt[key] || {};
+      const localTombstones = meta.tombstones[key] || {};
+      const incomingItemTimes = remoteItemTimes[key] || {};
+      const incomingTombstones = remoteTombstones[key] || {};
+      const itemIds = new Set([
+        ...Object.keys(localValue), ...Object.keys(remoteValue),
+        ...Object.keys(localTombstones), ...Object.keys(incomingTombstones)
+      ]);
+
+      itemIds.forEach(itemId => {
+        const localPresent = Object.prototype.hasOwnProperty.call(localValue, itemId);
+        const remotePresent = Object.prototype.hasOwnProperty.call(remoteValue, itemId);
+        const localDeletedAt = localTombstones[itemId] || '';
+        const remoteDeletedAt = incomingTombstones[itemId] || '';
+        const localItemTime = localItemTimes[itemId] || localDeletedAt || (localPresent ? localTime : '');
+        const remoteItemTime = incomingItemTimes[itemId] || remoteDeletedAt || (remotePresent ? remoteTime : '');
+        const sameItem = localPresent === remotePresent &&
+          (!localPresent || JSON.stringify(localValue[itemId]) === JSON.stringify(remoteValue[itemId])) &&
+          Boolean(localDeletedAt) === Boolean(remoteDeletedAt);
+
+        if(remoteItemTime && (!localItemTime || remoteItemTime > localItemTime)) {
+          if(remotePresent && !remoteDeletedAt) {
+            merged[itemId] = remoteValue[itemId];
+            delete localTombstones[itemId];
+          } else {
+            delete merged[itemId];
+            localTombstones[itemId] = remoteDeletedAt || remoteItemTime;
+          }
+          localItemTimes[itemId] = remoteItemTime;
+          changedLocal = true;
+        } else if(!sameItem) {
+          needsUpload = true;
         }
-      };
-      reader.readAsText(res.result.fileBlob);
-    })
-    .catch(err => {
-      console.error(err);
-      if(err.status===409) showAlert('El archivo no existe todavía en Dropbox. Guárdalo primero.');
-      else showAlert('Error al cargar de Dropbox.');
+      });
+
+      if(changedLocal && JSON.stringify(merged) !== JSON.stringify(localValue)) {
+        saveState(key, merged, { fromSync: true });
+      }
+      meta.itemUpdatedAt[key] = localItemTimes;
+      meta.tombstones[key] = localTombstones;
+      meta.keyUpdatedAt[key] = localTime > remoteTime ? localTime : remoteTime;
+      return;
+    }
+
+    const remoteIsNewer = remoteTime && (!localTime || remoteTime > localTime);
+    const localIsNewer = localTime && (!remoteTime || localTime > remoteTime);
+    const sameData = JSON.stringify(localValue) === JSON.stringify(remoteValue);
+
+    if(remoteIsNewer || (!localIsNewer && !sameData && !hasData(localValue))) {
+      saveState(key, remoteValue, { fromSync: true });
+      meta.keyUpdatedAt[key] = remoteTime || new Date().toISOString();
+      changedLocal = true;
+    } else if(!sameData) {
+      needsUpload = true;
+    }
+  });
+
+  meta.remoteRevision = remoteRevision || meta.remoteRevision || null;
+  meta.remoteModified = remoteModified || meta.remoteModified || null;
+  if(remoteFallback && (!meta.updatedAt || remoteFallback > meta.updatedAt)) meta.updatedAt = remoteFallback;
+  meta.dirty = needsUpload;
+  storeSyncMeta(meta);
+  if(changedLocal) reloadSyncedUI();
+  return needsUpload;
+}
+
+async function downloadAndMerge() {
+  try {
+    const response = await dbx.filesDownload({ path: DROPBOX_FILE });
+    const result = response.result;
+    const text = await readBlobAsText(result.fileBlob);
+    const bundle = JSON.parse(text);
+    return {
+      exists: true,
+      needsUpload: applyRemoteBundle(bundle, result.rev, result.server_modified)
+    };
+  } catch(err) {
+    if(err.status === 409) {
+      const meta = loadSyncMeta();
+      meta.remoteRevision = null;
+      meta.dirty = true;
+      storeSyncMeta(meta);
+      return { exists: false, needsUpload: true };
+    }
+    throw err;
+  }
+}
+
+async function uploadBundle(retryOnConflict=true) {
+  const bundle = makeSyncBundle();
+  const meta = loadSyncMeta();
+  const mode = meta.remoteRevision
+    ? { '.tag': 'update', update: meta.remoteRevision }
+    : { '.tag': 'add' };
+  const file = new Blob([JSON.stringify(bundle)], { type: 'application/json' });
+
+  try {
+    const response = await dbx.filesUpload({
+      path: DROPBOX_FILE,
+      contents: file,
+      mode,
+      autorename: false,
+      mute: true
     });
+    const currentMeta = loadSyncMeta();
+    currentMeta.remoteRevision = response.result.rev;
+    currentMeta.remoteModified = response.result.server_modified;
+    currentMeta.lastSyncAt = new Date().toISOString();
+    currentMeta.dirty = (currentMeta.changeVersion || 0) !== bundle.changeVersion;
+    storeSyncMeta(currentMeta);
+  } catch(err) {
+    if(err.status === 409 && retryOnConflict) {
+      setSyncStatus('conflict', 'Resolviendo cambios de otro dispositivo…');
+      await downloadAndMerge();
+      return uploadBundle(false);
+    }
+    throw err;
+  }
+}
+
+function clearDropboxSession() {
+  sessionStorage.removeItem(DROPBOX_SESSION_KEY);
+  dbx = null;
+  setDropboxConnected(false);
+}
+
+function handleSyncError(err, notify) {
+  console.error('Dropbox sync:', err);
+  if(err && err.status === 401) {
+    clearDropboxSession();
+    setSyncStatus('error', 'Sesión caducada · vuelve a conectar');
+    if(notify) showAlert('La sesión de Dropbox ha caducado. Vuelve a conectar la cuenta.');
+    return;
+  }
+  setSyncStatus(navigator.onLine ? 'error' : 'offline', navigator.onLine ? 'No se pudo sincronizar' : 'Sin conexión · pendiente');
+  if(notify) showAlert('No se pudo sincronizar con Dropbox. Los datos siguen guardados en este dispositivo.');
+}
+
+async function syncNow({ notify=false, uploadOnly=false }={}) {
+  if(!dbx) return;
+  if(!navigator.onLine) {
+    setSyncStatus('offline', 'Sin conexión · pendiente');
+    return;
+  }
+  if(syncInProgress) {
+    syncPending = true;
+    return;
+  }
+
+  syncInProgress = true;
+  setSyncStatus('syncing', 'Sincronizando…');
+  try {
+    if(!uploadOnly) await downloadAndMerge();
+    const meta = loadSyncMeta();
+    if(uploadOnly || meta.dirty) await uploadBundle();
+    setSyncStatus('synced', 'Guardado en Dropbox');
+    if(notify) showAlert('Datos sincronizados con Dropbox correctamente.');
+  } catch(err) {
+    handleSyncError(err, notify);
+  } finally {
+    syncInProgress = false;
+    if(syncPending) {
+      syncPending = false;
+      scheduleAutoSync(500);
+    }
+  }
+}
+
+function scheduleAutoSync(delay=AUTO_SYNC_DELAY) {
+  if(!dbx) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => syncNow(), delay);
+}
+
+function createDropboxClient(accessToken, expiresAt) {
+  const auth = new Dropbox.DropboxAuth({ clientId: CLIENT_ID });
+  auth.setAccessToken(accessToken);
+  if(expiresAt) auth.setAccessTokenExpiresAt(new Date(expiresAt));
+  dbx = new Dropbox.Dropbox({ auth });
+  setDropboxConnected(true);
+}
+
+function cleanOAuthParams() {
+  const url = new URL(window.location.href);
+  ['code', 'state', 'error', 'error_description'].forEach(key => url.searchParams.delete(key));
+  history.replaceState(null, document.title, url.pathname + (url.search ? url.search : '') + url.hash);
+}
+
+async function connectDropbox() {
+  if(window.location.protocol === 'file:') {
+    showAlert('Abre Life Pilot mediante http://localhost o desde Vercel para conectar Dropbox.');
+    return;
+  }
+  setSyncStatus('connecting', 'Abriendo Dropbox…');
+  const auth = new Dropbox.DropboxAuth({ clientId: CLIENT_ID });
+  const redirectUri = `${window.location.origin}${window.location.pathname}`;
+  const state = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+  try {
+    const authUrl = await auth.getAuthenticationUrl(redirectUri, state, 'code', 'online', null, 'none', true);
+    sessionStorage.setItem(DROPBOX_PKCE_KEY, JSON.stringify({
+      verifier: auth.getCodeVerifier(), state, redirectUri
+    }));
+    window.location.assign(authUrl);
+  } catch(err) {
+    handleSyncError(err, true);
+  }
+}
+
+async function restoreDropboxSession() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const oauthError = params.get('error');
+  const legacyParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  const legacyToken = legacyParams.get('access_token');
+
+  // Completa una autorización iniciada por la versión anterior y migra la sesión a PKCE en la próxima conexión.
+  if(legacyToken) {
+    const expiresIn = Number(legacyParams.get('expires_in')) || 14400;
+    const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
+    sessionStorage.setItem(DROPBOX_SESSION_KEY, JSON.stringify({ accessToken: legacyToken, expiresAt }));
+    history.replaceState(null, document.title, window.location.pathname + window.location.search);
+    createDropboxClient(legacyToken, expiresAt);
+    await syncNow();
+    return;
+  }
+
+  if(oauthError) {
+    const description = params.get('error_description') || 'No se autorizó el acceso a Dropbox.';
+    cleanOAuthParams();
+    setSyncStatus('error', 'Conexión cancelada');
+    showAlert(description);
+    return;
+  }
+
+  if(code) {
+    setSyncStatus('connecting', 'Terminando conexión…');
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(DROPBOX_PKCE_KEY) || '{}');
+      if(!saved.verifier || !saved.redirectUri || saved.state !== params.get('state')) {
+        throw new Error('No se pudo validar el inicio de sesión de Dropbox.');
+      }
+      const auth = new Dropbox.DropboxAuth({ clientId: CLIENT_ID });
+      auth.setCodeVerifier(saved.verifier);
+      const response = await auth.getAccessTokenFromCode(saved.redirectUri, code);
+      const expiresAt = new Date(Date.now() + (response.result.expires_in || 14400) * 1000).toISOString();
+      sessionStorage.setItem(DROPBOX_SESSION_KEY, JSON.stringify({
+        accessToken: response.result.access_token,
+        expiresAt
+      }));
+      sessionStorage.removeItem(DROPBOX_PKCE_KEY);
+      cleanOAuthParams();
+      createDropboxClient(response.result.access_token, expiresAt);
+      await syncNow();
+      return;
+    } catch(err) {
+      cleanOAuthParams();
+      handleSyncError(err, true);
+      return;
+    }
+  }
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(DROPBOX_SESSION_KEY) || '{}');
+    if(saved.accessToken && saved.expiresAt && new Date(saved.expiresAt).getTime() > Date.now() + 60000) {
+      createDropboxClient(saved.accessToken, saved.expiresAt);
+      await syncNow();
+    } else {
+      sessionStorage.removeItem(DROPBOX_SESSION_KEY);
+      setDropboxConnected(false);
+    }
+  } catch(err) {
+    clearDropboxSession();
+  }
+}
+
+ensureSyncMetadata();
+document.getElementById('dbx-login-btn').addEventListener('click', connectDropbox);
+document.getElementById('dbx-load-btn').addEventListener('click', () => syncNow({ notify: true }));
+document.getElementById('dbx-save-btn').addEventListener('click', () => syncNow({ notify: true, uploadOnly: true }));
+window.addEventListener('lifepilot:data-changed', () => scheduleAutoSync());
+window.addEventListener('online', () => scheduleAutoSync(250));
+window.addEventListener('offline', () => {
+  if(dbx) setSyncStatus('offline', 'Sin conexión · pendiente');
 });
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible') scheduleAutoSync(250);
+});
+restoreDropboxSession();
 /* ---------- PWA INSTALL ---------- */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

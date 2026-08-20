@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifepilot-v10-plan-24-aug';
+const CACHE_NAME = 'lifepilot-v11-auto-dropbox-sync';
 const urlsToCache = [
   './index.html',
   './style.css',

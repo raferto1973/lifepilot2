@@ -64,7 +64,7 @@ La alimentación usa un ciclo de 15 días con una sola receta compartida y racio
 - Menú familiar de 15 días y raciones adaptadas; su cumplimiento se registra en el seguimiento diario.
 - Cuidado personal y diario de notas.
 - Configuración de dieta, movilidad y cuidados.
-- Sincronización del progreso mediante Dropbox.
+- Sincronización automática con Dropbox, con guardado diferido, funcionamiento offline y detección de conflictos.
 - Instalación PWA y funcionamiento offline.
 
 ## Ejecutar en local
@@ -107,7 +107,11 @@ Los datos se guardan en el navegador. Las claves principales son:
 - `notes-log`: diario.
 - `cfg-diet`, `cfg-stretches` y `cfg-care`: configuración personalizada local.
 
-Dropbox sincroniza las claves de progreso configuradas en `DATA_KEYS`. No se debe incluir información clínica sensible si la cuenta o el dispositivo no están adecuadamente protegidos.
+Dropbox sincroniza las claves configuradas en `DATA_KEYS`, incluido el progreso, los registros y la configuración personalizada. El guardado local es inmediato y, cuando hay una sesión activa, los cambios se envían automáticamente tras 3 segundos sin actividad. Al abrir la app se comparan las marcas de tiempo locales y remotas; la revisión `rev` de Dropbox impide sobrescribir cambios concurrentes de otro dispositivo.
+
+La autenticación utiliza OAuth 2.0 con PKCE y un token de corta duración guardado sólo en `sessionStorage`. No se incluye ningún secreto de Dropbox en el navegador. Al caducar la sesión hay que volver a pulsar **Conectar Dropbox**. Para probar la conexión en local, la URL exacta `http://localhost:8000/` debe figurar entre los **Redirect URIs** de la aplicación en Dropbox; la URL de producción debe estar registrada del mismo modo.
+
+Los botones **Sincronizar ahora** y **Guardar ahora** se conservan como respaldo. Sin Internet, los cambios permanecen en `localStorage` y se reintentan al recuperar la conexión. No se debe incluir información clínica sensible si la cuenta o el dispositivo no están adecuadamente protegidos.
 
 ## Despliegue
 

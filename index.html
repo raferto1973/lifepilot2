@@ -28,11 +28,14 @@
   <p class="sub" style="margin-top: 0;">Plan actualizado L5-S1/S1 &middot; 24 agosto &ndash; 31 diciembre 2026</p>
 
   <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-    <p style="margin:0;flex:1;min-width:200px">Sincroniza tus datos con Dropbox para acceder a tu plan desde cualquier dispositivo.</p>
+    <div style="flex:1;min-width:220px">
+      <p style="margin:0">Tus cambios se guardan automáticamente en Dropbox cuando la cuenta está conectada.</p>
+      <span id="dbx-sync-status" class="sync-status disconnected" role="status" aria-live="polite"><i class="ti ti-cloud-off"></i> Sin conectar</span>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="reset" id="dbx-login-btn"><i class="ti ti-brand-dropbox" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Conectar Dropbox</button>
-      <button class="reset" id="dbx-load-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-cloud-download" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Cargar de Dropbox</button>
-      <button class="reset" id="dbx-save-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-cloud-upload" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Guardar en Dropbox</button>
+      <button class="reset" id="dbx-load-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Sincronizar ahora</button>
+      <button class="reset" id="dbx-save-btn" style="display:none; color:var(--border-accent)"><i class="ti ti-cloud-upload" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Guardar ahora</button>
     </div>
   </div>
 
